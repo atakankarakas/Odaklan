@@ -191,8 +191,15 @@
                 </button>
 
                 <button id="reset-btn"
-                    class="hidden bg-slate-800 hover:bg-slate-700 px-6 py-4 rounded-full text-lg font-medium text-slate-300 transition-all">
+                    class="hidden bg-slate-800 hover:bg-slate-700 px-6 py-4 rounded-full text-lg font-medium text-slate-300 transition-all"
+                    title="Sıfırla">
                     <i class="fa-solid fa-rotate-right"></i>
+                </button>
+
+                <button id="skip-btn"
+                    class="hidden bg-slate-800 hover:bg-slate-700 px-6 py-4 rounded-full text-lg font-medium text-slate-300 transition-all"
+                    title="İleri Sar (Seansı Tamamla)">
+                    <i class="fa-solid fa-forward"></i>
                 </button>
             </div>
 
@@ -304,6 +311,7 @@
             startBtn: document.getElementById('start-btn'),
             pauseBtn: document.getElementById('pause-btn'),
             resetBtn: document.getElementById('reset-btn'),
+            skipBtn: document.getElementById('skip-btn'),
             dailyFocus: document.getElementById('daily-focus'),
             soundBtns: document.querySelectorAll('.sound-btn'),
             audioRain: document.getElementById('audio-rain'),
@@ -371,6 +379,7 @@
             elements.startBtn.classList.add('hidden');
             elements.pauseBtn.classList.remove('hidden');
             elements.resetBtn.classList.remove('hidden');
+            elements.skipBtn.classList.remove('hidden');
 
             // Add pulse animation
             elements.pauseBtn.classList.add('pulse-animation');
@@ -421,18 +430,30 @@
             updateTimerDisplay();
             updateProgressRing();
 
-            // Hide reset button
+            // Hide control buttons
             elements.resetBtn.classList.add('hidden');
+            elements.skipBtn.classList.add('hidden');
         }
 
-        function completePomodoro() {
+        function completePomodoro(isSkipped = false) {
             clearInterval(state.intervalId);
             state.isRunning = false;
 
-            // Add 25 minutes for completed pomodoro
-            state.dailyFocusMinutes += 25;
-            saveDailyFocus();
-            updateDailyFocusDisplay();
+            // Calculate actual focused time
+            let minutesToAdd;
+            if (isSkipped && state.sessionStartTime) {
+                // If skipped, add only the actual time spent
+                minutesToAdd = Math.floor((Date.now() - state.sessionStartTime) / 60000);
+            } else {
+                // If naturally completed, add full 25 minutes
+                minutesToAdd = 25;
+            }
+
+            if (minutesToAdd > 0) {
+                state.dailyFocusMinutes += minutesToAdd;
+                saveDailyFocus();
+                updateDailyFocusDisplay();
+            }
 
             // Exit focus mode
             elements.app.classList.remove('focus-mode');
@@ -457,6 +478,7 @@
             elements.startBtn.classList.remove('hidden');
             elements.pauseBtn.classList.add('hidden');
             elements.resetBtn.classList.add('hidden');
+            elements.skipBtn.classList.add('hidden');
             elements.pauseBtn.classList.remove('pulse-animation');
         }
 
@@ -526,6 +548,7 @@
         elements.startBtn.addEventListener('click', startTimer);
         elements.pauseBtn.addEventListener('click', pauseTimer);
         elements.resetBtn.addEventListener('click', resetTimer);
+        elements.skipBtn.addEventListener('click', () => completePomodoro(true));
 
         elements.soundBtns.forEach(btn => {
             btn.addEventListener('click', () => {
