@@ -169,10 +169,16 @@
                 </svg>
 
                 <!-- Timer Text -->
-                <div class="absolute inset-0 flex items-center justify-center">
+                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                    <span id="mode-indicator" class="text-sm font-medium text-accent mb-2 uppercase tracking-widest">
+                        Odak
+                    </span>
                     <span id="timer-display"
                         class="timer-font text-7xl md:text-8xl font-bold text-slate-100 tracking-wider">
                         25:00
+                    </span>
+                    <span id="pomodoro-counter" class="text-xs text-slate-500 mt-2">
+                        0 / 4
                     </span>
                 </div>
             </div>
@@ -246,7 +252,7 @@
                     <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-accent/20 mb-4">
                         <i class="fa-solid fa-fire text-4xl text-accent"></i>
                     </div>
-                    <h2 class="text-2xl font-bold text-slate-100 mb-2">Tebrikler Şef! 🔥</h2>
+                    <h2 class="text-2xl font-bold text-slate-100 mb-2">Görev Tamamlandı! 🔥</h2>
                     <p class="text-lg text-slate-300">
                         Bugün <span id="modal-focus-time" class="text-accent font-bold">0</span> dakika odaklandın.
                     </p>
@@ -291,6 +297,9 @@
         // State Management
         // =====================
         const POMODORO_DURATION = 25 * 60; // 25 minutes in seconds
+        const SHORT_BREAK_DURATION = 5 * 60; // 5 minutes in seconds
+        const LONG_BREAK_DURATION = 15 * 60; // 15 minutes in seconds
+        const POMODOROS_UNTIL_LONG_BREAK = 4;
 
         let state = {
             timeRemaining: POMODORO_DURATION,
@@ -298,7 +307,9 @@
             intervalId: null,
             currentSound: 'mute',
             dailyFocusMinutes: 0,
-            sessionStartTime: null
+            sessionStartTime: null,
+            pomodoroCount: 0, // Tracks completed pomodoros
+            currentMode: 'focus' // 'focus', 'shortBreak', 'longBreak'
         };
 
         // =====================
@@ -308,6 +319,8 @@
             app: document.getElementById('app'),
             timerDisplay: document.getElementById('timer-display'),
             progressCircle: document.getElementById('progress-circle'),
+            modeIndicator: document.getElementById('mode-indicator'),
+            pomodoroCounter: document.getElementById('pomodoro-counter'),
             startBtn: document.getElementById('start-btn'),
             pauseBtn: document.getElementById('pause-btn'),
             resetBtn: document.getElementById('reset-btn'),
@@ -361,7 +374,18 @@
 
         function updateProgressRing() {
             const circumference = 2 * Math.PI * 180; // 1131
-            const progress = state.timeRemaining / POMODORO_DURATION;
+
+            // Get the correct duration based on current mode
+            let totalDuration;
+            if (state.currentMode === 'focus') {
+                totalDuration = POMODORO_DURATION;
+            } else if (state.currentMode === 'shortBreak') {
+                totalDuration = SHORT_BREAK_DURATION;
+            } else {
+                totalDuration = LONG_BREAK_DURATION;
+            }
+
+            const progress = state.timeRemaining / totalDuration;
             const offset = circumference * (1 - progress);
             elements.progressCircle.style.strokeDashoffset = offset;
         }
@@ -439,23 +463,48 @@
             clearInterval(state.intervalId);
             state.isRunning = false;
 
-            // Calculate actual focused time
-            let minutesToAdd;
-            if (isSkipped && state.sessionStartTime) {
-                // If skipped, add only the actual time spent
-                minutesToAdd = Math.floor((Date.now() - state.sessionStartTime) / 60000);
+            // Only add focus time if we're in focus mode
+            if (state.currentMode === 'focus') {
+                // Calculate actual focused time
+                let minutesToAdd;
+                if (isSkipped && state.sessionStartTime) {
+                    // If skipped, add only the actual time spent
+                    minutesToAdd = Math.floor((Date.now() - state.sessionStartTime) / 60000);
+                } else {
+                    // If naturally completed, add full 25 minutes
+                    minutesToAdd = 25;
+                }
+
+                if (minutesToAdd > 0) {
+                    state.dailyFocusMinutes += minutesToAdd;
+                    saveDailyFocus();
+                    updateDailyFocusDisplay();
+                }
+
+                // Increment pomodoro count
+                state.pomodoroCount++;
+                updatePomodoroCounter();
+
+                // Show completion modal only after focus sessions
+                showCompletionModal();
+
+                // Determine next break type
+                if (state.pomodoroCount % POMODOROS_UNTIL_LONG_BREAK === 0) {
+                    // Long break after 4 pomodoros
+                    state.currentMode = 'longBreak';
+                    state.timeRemaining = LONG_BREAK_DURATION;
+                } else {
+                    // Short break
+                    state.currentMode = 'shortBreak';
+                    state.timeRemaining = SHORT_BREAK_DURATION;
+                }
             } else {
-                // If naturally completed, add full 25 minutes
-                minutesToAdd = 25;
+                // Break is complete, go back to focus mode
+                state.currentMode = 'focus';
+                state.timeRemaining = POMODORO_DURATION;
             }
 
-            if (minutesToAdd > 0) {
-                state.dailyFocusMinutes += minutesToAdd;
-                saveDailyFocus();
-                updateDailyFocusDisplay();
-            }
-
-            // Exit focus mode
+            // Exit focus mode UI
             elements.app.classList.remove('focus-mode');
 
             // Play completion sound (if available)
@@ -465,14 +514,11 @@
                 console.log('Completion sound not available');
             }
 
-            // Show modal
-            showCompletionModal();
-
-            // Reset timer state
-            state.timeRemaining = POMODORO_DURATION;
+            // Update UI
             state.sessionStartTime = null;
             updateTimerDisplay();
             updateProgressRing();
+            updateModeDisplay();
 
             // Reset button visibility
             elements.startBtn.classList.remove('hidden');
@@ -480,6 +526,27 @@
             elements.resetBtn.classList.add('hidden');
             elements.skipBtn.classList.add('hidden');
             elements.pauseBtn.classList.remove('pulse-animation');
+        }
+
+        function updateModeDisplay() {
+            const modeNames = {
+                'focus': 'Odak',
+                'shortBreak': 'Kısa Mola',
+                'longBreak': 'Uzun Mola'
+            };
+            elements.modeIndicator.textContent = modeNames[state.currentMode];
+
+            // Change progress ring color based on mode
+            if (state.currentMode === 'focus') {
+                elements.progressCircle.style.stroke = '#00B7C6'; // Accent color
+            } else {
+                elements.progressCircle.style.stroke = '#22c55e'; // Green for breaks
+            }
+        }
+
+        function updatePomodoroCounter() {
+            const current = state.pomodoroCount % POMODOROS_UNTIL_LONG_BREAK;
+            elements.pomodoroCounter.textContent = `${current} / ${POMODOROS_UNTIL_LONG_BREAK}`;
         }
 
         // =====================
@@ -597,6 +664,8 @@
             loadDailyFocus();
             updateTimerDisplay();
             updateProgressRing();
+            updateModeDisplay();
+            updatePomodoroCounter();
         }
 
         init();
