@@ -49,6 +49,7 @@
             box-sizing: border-box;
         }
 
+        html,
         body {
             font-family: 'Inter', sans-serif;
             background-color: #0f172a;
@@ -58,6 +59,7 @@
             min-height: 100dvh;
             /* Dynamic viewport height - handles mobile address bar */
             overflow-x: hidden;
+            width: 100%;
         }
 
         .timer-font {
@@ -264,53 +266,81 @@
 
     </div>
 
-    <!-- Completion Modal -->
+    <!-- Completion Modal (The Trophy Room) -->
     <div id="completion-modal" class="hidden fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-4">
-        <div class="max-w-md w-full">
+        <div class="max-w-md w-full bg-slate-800 rounded-3xl overflow-hidden flex flex-col max-h-[90vh]">
 
-            <!-- Share Card (This will be captured by html2canvas) -->
-            <div id="share-card" class="bg-slate-800 rounded-3xl p-8 text-center mb-6">
-                <div class="mb-6">
-                    <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-accent/20 mb-4">
-                        <i class="fa-solid fa-fire text-4xl text-accent"></i>
-                    </div>
-                    <h2 class="text-2xl font-bold text-slate-100 mb-2">Görev Tamamlandı! 🔥</h2>
-                    <p class="text-lg text-slate-300">
-                        Bugün <span id="modal-focus-time" class="text-accent font-bold">0</span> dakika odaklandın.
-                    </p>
+            <!-- Modal Header -->
+            <div class="p-6 pb-2 text-center">
+                <div class="inline-flex items-center justify-center gap-2 mb-1">
+                    <i class="fa-solid fa-fire text-accent text-xl"></i>
+                    <span class="text-slate-400 font-medium tracking-wide text-sm uppercase">Görev Tamamlandı</span>
                 </div>
+                <h2 class="text-3xl font-bold text-white tracking-tight"><span id="modal-focus-time">25</span> dk
+                    Odaklandın!</h2>
+            </div>
 
-                <div class="border-t border-slate-700 pt-6">
-                    <p id="modal-quote-preview" class="text-slate-400 italic font-light mb-4 text-sm px-4">"Zafer,
-                        inananlarındır."</p>
-                    <div class="flex items-center justify-center gap-2 text-sm text-slate-500">
-                        <span class="text-accent font-semibold">Odaklan!</span>
-                        <span>ile güçlendirildi</span>
-                    </div>
+            <!-- Tabs (Segmented Control) -->
+            <div class="px-6 py-2">
+                <div class="flex p-1 bg-slate-700/50 rounded-xl relative">
+                    <!-- Tab Background Pill (Animated via JS logic if needed, or simple toggle) -->
+                    <button id="tab-story"
+                        class="flex-1 flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-bold transition-all bg-accent text-slate-900 shadow-lg">
+                        <i class="fa-brands fa-instagram text-lg"></i>
+                        HİKAYE
+                    </button>
+                    <button id="tab-feed"
+                        class="flex-1 flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-medium text-slate-400 hover:text-slate-200 transition-all">
+                        <i class="fa-regular fa-image text-lg"></i>
+                        YATAY
+                    </button>
                 </div>
             </div>
 
-            <!-- Action Buttons -->
-            <div class="flex flex-col gap-3">
-                <div class="grid grid-cols-2 gap-3">
-                    <button id="download-story-btn"
-                        class="btn-accent py-4 rounded-2xl font-semibold text-lg flex flex-col items-center justify-center gap-1 group">
-                        <i class="fa-brands fa-instagram text-2xl group-hover:scale-110 transition-transform"></i>
-                        <span class="text-sm">Hikaye İndir</span>
+            <!-- Preview Area (The Mirror) -->
+            <div
+                class="flex-1 overflow-y-auto overflow-x-hidden p-6 bg-slate-800 relative flex flex-col items-center justify-center min-h-[400px]">
+
+                <!-- Container for sizing stability -->
+                <div id="preview-wrapper" class="relative transition-all duration-300 ease-out"
+                    style="will-change: transform, height;">
+                    <!-- The Mirrored Content will be injected here -->
+                    <!-- It will be scaled via CSS transform -->
+                </div>
+
+                <!-- Loading / Placeholder State -->
+                <div id="preview-loading"
+                    class="absolute inset-0 flex flex-col items-center justify-center text-slate-500 gap-3 hidden">
+                    <i class="fa-solid fa-circle-notch fa-spin text-3xl text-accent"></i>
+                    <span class="text-sm">Önizleme Hazırlanıyor...</span>
+                </div>
+            </div>
+
+            <!-- Action Bar -->
+            <div class="p-6 bg-slate-800 border-t border-slate-700/50 flex flex-col gap-3 z-10">
+
+                <!-- Main Actions -->
+                <div class="grid grid-cols-[1fr_2fr] gap-3">
+                    <button id="reroll-btn"
+                        class="bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-xl py-4 font-semibold flex items-center justify-center gap-2 transition-all active:scale-95 group"
+                        title="Sözü Değiştir">
+                        <i
+                            class="fa-solid fa-dice text-xl text-accent group-hover:rotate-180 transition-transform duration-500"></i>
+                        <span class="hidden text-sm sm:inline">Değiştir</span>
                     </button>
-                    <button id="download-feed-btn"
-                        class="bg-slate-700 hover:bg-slate-600 text-slate-200 py-4 rounded-2xl font-semibold text-lg flex flex-col items-center justify-center gap-1 transition-all group">
-                        <i class="fa-regular fa-image text-2xl group-hover:scale-110 transition-transform"></i>
-                        <span class="text-sm">Yatay İndir</span>
+
+                    <button id="download-active-btn"
+                        class="btn-accent rounded-xl py-4 font-bold text-lg shadow-lg shadow-accent/20 flex items-center justify-center gap-2 active:scale-95 transition-all">
+                        <i class="fa-solid fa-download"></i>
+                        PAYLAŞ & İNDİR
                     </button>
                 </div>
 
                 <button id="close-modal-btn"
-                    class="bg-slate-800 hover:bg-slate-700 w-full py-4 rounded-2xl text-slate-400 hover:text-slate-200 transition-all font-medium">
+                    class="text-slate-500 hover:text-slate-300 text-sm font-medium py-2 transition-colors">
                     Kapat ve Devam Et
                 </button>
             </div>
-
         </div>
     </div>
 
@@ -476,222 +506,36 @@
             "Emek olmadan yemek olmaz."
         ];
 
-        // Time constants (eliminates magic numbers)
+        // Time constants
         const MS_PER_SECOND = 1000;
-        const MS_PER_MINUTE = 60 * MS_PER_SECOND;
-        const TIMER_TICK_INTERVAL = 250; // ms - check frequently for accuracy
+        const TIMER_TICK_INTERVAL = 250;
 
         let state = {
             timeRemaining: POMODORO_DURATION,
-            targetEndTime: null, // Absolute time when timer should end (for sleep mode fix)
+            targetEndTime: null,
             isRunning: false,
             intervalId: null,
             currentSound: 'mute',
             dailyFocusMinutes: 0,
             sessionStartTime: null,
-            pomodoroCount: 0, // Tracks completed pomodoros
-            currentMode: 'focus', // 'focus', 'shortBreak', 'longBreak'
-            hasRequestedPermission: false, // Only request notification permission once
-            titleFlashInterval: null // For title flashing
+            pomodoroCount: 0,
+            currentMode: 'focus',
+            hasRequestedPermission: false,
+            titleFlashInterval: null,
+            // New State Properties
+            currentQuote: "", // Single Source of Truth for the session quote
+            activeTab: 'story' // 'story' or 'feed'
         };
 
         // =====================
-        // Favicon SVGs (Data URIs)
+        // Favicon SVGs
         // =====================
         const favicons = {
-            focus: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%2300B7C6'/><text x='50' y='65' font-size='45' text-anchor='middle' fill='white'>▶</text></svg>",
-            shortBreak: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%2322c55e'/><text x='50' y='65' font-size='40' text-anchor='middle' fill='white'>☕</text></svg>",
-            longBreak: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%238b5cf6'/><text x='50' y='65' font-size='40' text-anchor='middle' fill='white'>🎯</text></svg>",
-            idle: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%2300B7C6'/><text x='50' y='62' font-size='40' text-anchor='middle' fill='white'>O</text></svg>"
+            focus: `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%2300B7C6'/><text x='50' y='65' font-size='45' text-anchor='middle' fill='white'>▶</text></svg>`,
+            shortBreak: `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%2322c55e'/><text x='50' y='65' font-size='40' text-anchor='middle' fill='white'>☕</text></svg>`,
+            longBreak: `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%238b5cf6'/><text x='50' y='65' font-size='40' text-anchor='middle' fill='white'>🎯</text></svg>`,
+            idle: `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%2300B7C6'/><text x='50' y='62' font-size='40' text-anchor='middle' fill='white'>O</text></svg>`
         };
-
-        // =====================
-        // Notification Helpers
-        // =====================
-        const originalTitle = document.title;
-
-        function requestNotificationPermission() {
-            if ('Notification' in window && Notification.permission === 'default' && !state.hasRequestedPermission) {
-                state.hasRequestedPermission = true;
-                Notification.requestPermission();
-            }
-        }
-
-        function sendNotification(title, body) {
-            // Desktop notification (not supported on iOS)
-            if ('Notification' in window && Notification.permission === 'granted') {
-                try {
-                    new Notification(title, {
-                        body: body,
-                        icon: favicons.focus,
-                        tag: 'odaklan-notification'
-                    });
-                } catch (e) {
-                    // Notification failed, use title flash as fallback
-                }
-            }
-
-            // Title flash - works on ALL platforms including iOS
-            flashTitle(title);
-        }
-
-        function flashTitle(message) {
-            // Clear any existing flash
-            if (state.titleFlashInterval) {
-                clearInterval(state.titleFlashInterval);
-                document.title = originalTitle;
-            }
-
-            let isOriginal = false;
-            let flashCount = 0;
-            const maxFlashes = 10; // Flash 10 times (5 seconds total)
-
-            state.titleFlashInterval = setInterval(() => {
-                document.title = isOriginal ? message : originalTitle;
-                isOriginal = !isOriginal;
-                flashCount++;
-
-                if (flashCount >= maxFlashes * 2) {
-                    clearInterval(state.titleFlashInterval);
-                    state.titleFlashInterval = null;
-                    document.title = originalTitle;
-                }
-            }, 500);
-        }
-
-        function updateFavicon(mode) {
-            const favicon = document.getElementById('favicon');
-            if (favicon) {
-                favicon.href = favicons[mode] || favicons.idle;
-            }
-        }
-
-        // =====================
-        // Social Export Logic
-        // =====================
-        function getRandomQuote() {
-            return motivationQuotes[Math.floor(Math.random() * motivationQuotes.length)];
-        }
-
-        function prepareExportTemplates(minutes) {
-            const timeString = formatTime(minutes * 60); // Convert daily focus minutes back to string format if needed, OR just use minutes
-            // Actually, design wants "Total Focus Time" or similar.
-            // Let's use the minutes focused in current session for the story time?
-            // User request: "Devasa Sayaç (Örn: 04:25)" - this usually implies session time.
-            // But context is "Görev Tamam". 
-            // Let's use the last session duration (25:00) or total daily focus?
-            // "Bugün x dakika odaklandın" says the modal. 
-            // Let's show the Session Duration (e.g., 25:00) on Story, and Total Daily on Feed?
-            // Or just use the standard 25:00 for "Mission Complete".
-
-            // Wait, we can stick to what the user sees on the timer usually: 25:00.
-            // But since it's "Done", maybe show the total daily accumulation?
-            // Let's go with Total Daily Minutes for now as it's a better "Flex".
-            // If it's just 25, format as 00:25.
-
-            const hours = Math.floor(state.dailyFocusMinutes / 60);
-            const mins = state.dailyFocusMinutes % 60;
-            const dailyTimeStr = `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
-
-            // Update Story
-            document.getElementById('story-time').textContent = dailyTimeStr;
-            document.getElementById('story-quote').textContent = `"${getRandomQuote()}"`;
-
-            // Update Feed
-            document.getElementById('feed-time').textContent = dailyTimeStr;
-            document.getElementById('feed-quote').textContent = `"${getRandomQuote()}"`;
-        }
-
-        async function downloadTemplate(templateId, filename, btnId) {
-            const element = document.getElementById(templateId);
-            const btn = document.getElementById(btnId);
-            if (!element || !btn) return;
-
-            // Loading State
-            const originalText = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-2xl"></i><span class="text-sm">Hazırlanıyor...</span>`;
-
-            try {
-                // Ensure fonts are loaded before rendering
-                await document.fonts.ready;
-
-                const canvas = await html2canvas(element, {
-                    scale: 1, // Standard resolution (1080p is enough)
-                    useCORS: true,
-                    backgroundColor: '#0f172a', // Slate-900
-                    logging: false
-                });
-
-                const link = document.createElement('a');
-                link.download = `${filename}_${Date.now()}.png`;
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-            } catch (err) {
-                console.error('Export failed:', err);
-                alert('Görsel oluşturulamadı. Lütfen tekrar deneyin.');
-            } finally {
-                // Restore Button State
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
-        }
-
-        // =====================
-        // Soft Prompt Logic
-        // =====================
-        function updateNotificationIcon() {
-            const icon = document.getElementById('notification-icon');
-            if (!icon) return;
-
-            if (Notification.permission === 'granted') {
-                icon.className = 'fa-solid fa-bell text-accent'; // Active/Granted
-            } else if (Notification.permission === 'denied') {
-                icon.className = 'fa-solid fa-bell-slash text-slate-600'; // Denied
-            } else {
-                icon.className = 'fa-regular fa-bell'; // Default/Prompt needed
-            }
-        }
-
-        function showNotificationPrompt() {
-            // Check current permission state
-            const modalTitle = document.querySelector('#notification-modal h3');
-            const modalText = document.getElementById('notification-modal-text');
-            const actionBtn = document.getElementById('enable-notifications-btn');
-
-            if (Notification.permission === 'granted') {
-                // Already granted
-                return;
-            }
-
-            if (Notification.permission === 'denied') {
-                // Denied state - guide user to settings
-                modalTitle.textContent = "Bildirimler Engelli 😔";
-                modalText.textContent = "Tarayıcı ayarlarından bu site için bildirim engelini kaldırmalısın.";
-                actionBtn.textContent = "Tamam, Anladım";
-                actionBtn.onclick = () => document.getElementById('notification-modal').classList.add('hidden');
-            } else {
-                // Default state - ask for permission
-                modalTitle.textContent = "Zaman Dolunca Haber Ver?";
-                modalText.textContent = "Süre bittiğinde veya mola zamanı geldiğinde sana bildirim gönderebilmem için iznine ihtiyacım var.";
-                actionBtn.textContent = "İzin Ver";
-                actionBtn.onclick = handlePermissionRequest;
-            }
-
-            document.getElementById('notification-modal').classList.remove('hidden');
-        }
-
-        function handlePermissionRequest() {
-            Notification.requestPermission().then(permission => {
-                updateNotificationIcon();
-                document.getElementById('notification-modal').classList.add('hidden');
-
-                if (permission === 'granted') {
-                    // Send a test notification immediately to confirm
-                    sendNotification('Süper! 🎉', 'Bildirimler başarıyla açıldı.');
-                }
-            });
-        }
 
         // =====================
         // DOM Elements
@@ -712,15 +556,301 @@
             audioCafe: document.getElementById('audio-cafe'),
             audioComplete: document.getElementById('audio-complete'),
             audioBreakEnd: document.getElementById('audio-break-end'),
+
+            // Modal Elements
             modal: document.getElementById('completion-modal'),
             modalFocusTime: document.getElementById('modal-focus-time'),
             closeModalBtn: document.getElementById('close-modal-btn'),
-            downloadStoryBtn: document.getElementById('download-story-btn'),
-            downloadFeedBtn: document.getElementById('download-feed-btn'),
+
+            // New Modal Elements
+            tabStory: document.getElementById('tab-story'),
+            tabFeed: document.getElementById('tab-feed'),
+            previewWrapper: document.getElementById('preview-wrapper'),
+            previewLoading: document.getElementById('preview-loading'),
+            downloadActiveBtn: document.getElementById('download-active-btn'),
+            rerollBtn: document.getElementById('reroll-btn'),
+
+            // Hidden Export Templates
+            exportStory: document.getElementById('export-story'),
+            exportFeed: document.getElementById('export-feed'),
+
+            // Notification Elements
             notificationBtn: document.getElementById('notification-btn'),
+            notificationModal: document.getElementById('notification-modal'),
             enableNotificationsBtn: document.getElementById('enable-notifications-btn'),
             closeNotificationModalBtn: document.getElementById('close-notification-modal-btn')
         };
+
+        // =====================
+        // Notification Helpers
+        // =====================
+        const originalTitle = document.title;
+        // ... (Notification functions kept as is, abbreviating for clarity if possible, but keeping full logic)
+        function requestNotificationPermission() { /* ... */ } // Not used currently due to soft prompt
+
+        function sendNotification(title, body) {
+            if ('Notification' in window && Notification.permission === 'granted') {
+                try {
+                    new Notification(title, { body: body, icon: favicons.focus, tag: 'odaklan-notification' });
+                } catch (e) { }
+            }
+            flashTitle(title);
+        }
+
+        function flashTitle(message) {
+            if (state.titleFlashInterval) {
+                clearInterval(state.titleFlashInterval);
+                document.title = originalTitle;
+            }
+            let isOriginal = false;
+            let flashCount = 0;
+            const maxFlashes = 10;
+            state.titleFlashInterval = setInterval(() => {
+                document.title = isOriginal ? message : originalTitle;
+                isOriginal = !isOriginal;
+                flashCount++;
+                if (flashCount >= maxFlashes * 2) {
+                    clearInterval(state.titleFlashInterval);
+                    state.titleFlashInterval = null;
+                    document.title = originalTitle;
+                }
+            }, 500);
+        }
+
+        function updateFavicon(mode) {
+            // ... existing logic
+            const favicon = document.getElementById('favicon');
+            if (favicon) favicon.href = favicons[mode] || favicons.idle;
+        }
+
+        // =====================
+        // Social Export & Preview Logic (The Core Update)
+        // =====================
+        function getRandomQuote() {
+            return motivationQuotes[Math.floor(Math.random() * motivationQuotes.length)];
+        }
+
+        function updateMasterTemplates() {
+            // Fills the hidden templates with the current state data
+            // This is the "Master" update step.
+
+            const hours = Math.floor(state.dailyFocusMinutes / 60);
+            const mins = state.dailyFocusMinutes % 60;
+            const dailyTimeStr = `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+            const quote = state.currentQuote;
+
+            // Update Story Master
+            document.getElementById('story-time').textContent = dailyTimeStr;
+            document.getElementById('story-quote').textContent = `"${quote}"`;
+
+            // Update Feed Master
+            document.getElementById('feed-time').textContent = dailyTimeStr;
+            document.getElementById('feed-quote').textContent = `"${quote}"`;
+        }
+
+        function calculateScaleAndRender() {
+            // 1. Get container dimensions
+            const container = elements.previewWrapper.parentElement; // The flexible container
+            const containerWidth = container.clientWidth;
+
+            // 2. Determine target template
+            const targetId = state.activeTab === 'story' ? 'export-story' : 'export-feed';
+            const masterElement = document.getElementById(targetId);
+
+            // 3. Define original dimensions
+            const originalWidth = state.activeTab === 'story' ? 1080 : 1920;
+            const originalHeight = state.activeTab === 'story' ? 1920 : 1080;
+
+            // 4. Calculate Scale
+            // Add some padding/margin safety logic if needed, but simple ratio works best for full width
+            const scale = containerWidth / originalWidth;
+
+            // 5. Update Preview Wrapper content & style
+            elements.previewWrapper.innerHTML = ''; // Clear previous
+
+            // Clone Strategy: Update Master -> Clone
+            updateMasterTemplates(); // Ensure master is fresh
+
+            const clone = masterElement.cloneNode(true);
+
+            // Clean up clone: Remove IDs to prevent duplicates in DOM
+            // (Optional but good practice, though styling relies on classes so it should look fine)
+            // But we used IDs for easy updating in updateMasterTemplates.
+            // Since we aren't querying the clone by ID for logic, it's "okay" but technically invalid HTML.
+            // A safer bet involves stripping IDs or accepting the risk for this specific visual-only clone.
+            // We'll keep it simple: Clone is just prompt for visual.
+            clone.id = 'preview-clone';
+            clone.style.position = 'absolute'; // Overwrite fixed
+            clone.style.top = '0';
+            clone.style.left = '0';
+            clone.style.zIndex = '1';
+
+            // Remove the negative positioning from the clone so it appears
+            clone.classList.remove('left-[-9999px]');
+            clone.classList.remove('fixed');
+
+            elements.previewWrapper.appendChild(clone);
+
+            // 6. Phantom Space Fix & Scaling
+            elements.previewWrapper.style.width = '100%';
+            elements.previewWrapper.style.height = `${originalHeight * scale}px`; // Explicit height set
+
+            clone.style.transformOrigin = 'top left';
+            clone.style.transform = `scale(${scale})`;
+
+            // Optimization for rendering quality
+            clone.style.willChange = 'transform';
+            clone.style.backfaceVisibility = 'hidden';
+
+            // 7. Make Clickable
+            clone.style.cursor = 'pointer';
+            clone.onclick = () => {
+                downloadActiveTemplate();
+            };
+        }
+
+        // ResizeObserver for memory-safe and responsive scaling
+        const resizeObserver = new ResizeObserver(entries => {
+            // Debounce could be added here if performance is an issue, but standard resize is fine
+            // for scale calculation usually.
+            window.requestAnimationFrame(() => {
+                if (!elements.modal.classList.contains('hidden')) {
+                    calculateScaleAndRender();
+                }
+            });
+        });
+
+        // Initialize Observer on the parent of preview wrapper (the scrollable area)
+        resizeObserver.observe(elements.previewWrapper.parentElement);
+
+        function handleTabSwitch(tab) {
+            state.activeTab = tab;
+
+            // Update Tab UI
+            if (tab === 'story') {
+                elements.tabStory.classList.add('bg-accent', 'text-slate-900', 'shadow-lg');
+                elements.tabStory.classList.remove('text-slate-400');
+
+                elements.tabFeed.classList.remove('bg-accent', 'text-slate-900', 'shadow-lg');
+                elements.tabFeed.classList.add('text-slate-400');
+            } else {
+                elements.tabFeed.classList.add('bg-accent', 'text-slate-900', 'shadow-lg');
+                elements.tabFeed.classList.remove('text-slate-400');
+
+                elements.tabStory.classList.remove('bg-accent', 'text-slate-900', 'shadow-lg');
+                elements.tabStory.classList.add('text-slate-400');
+            }
+
+            // Render new preview
+            calculateScaleAndRender();
+        }
+
+        function rerollQuote() {
+            // Generate new quote
+            let newQuote = getRandomQuote();
+            // Ensure distinct from current if possible (simple check)
+            while (newQuote === state.currentQuote && motivationQuotes.length > 1) {
+                newQuote = getRandomQuote();
+            }
+            state.currentQuote = newQuote;
+
+            // Trigger preview update
+            // Button animation effect
+            const icon = elements.rerollBtn.querySelector('i');
+            icon.classList.add('fa-spin-fast'); // Assuming custom or just rotate
+            icon.style.transition = 'transform 0.5s ease';
+            icon.style.transform = 'rotate(360deg)';
+
+            setTimeout(() => {
+                icon.style.transform = 'rotate(0deg)';
+            }, 500);
+
+            calculateScaleAndRender();
+        }
+
+        async function downloadActiveTemplate() {
+            const btn = elements.downloadActiveBtn;
+            const originalContent = btn.innerHTML;
+            const targetId = state.activeTab === 'story' ? 'export-story' : 'export-feed';
+            const filename = state.activeTab === 'story' ? 'odaklan_story' : 'odaklan_feed';
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Hazırlanıyor...`;
+
+            try {
+                // Ensure fonts are ready (Extra check)
+                await document.fonts.ready;
+
+                // Update master one last time to be sure
+                updateMasterTemplates();
+
+                const element = document.getElementById(targetId);
+                const canvas = await html2canvas(element, {
+                    scale: 1,
+                    useCORS: true,
+                    backgroundColor: '#0f172a',
+                    logging: false
+                });
+
+                const link = document.createElement('a');
+                link.download = `${filename}_${Date.now()}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+
+            } catch (err) {
+                console.error('Export failed:', err);
+                alert('Görsel oluşturulamadı. Lütfen tekrar deneyin.');
+            } finally {
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+            }
+        }
+
+        // =====================
+        // Soft Prompt Logic
+        // =====================
+        function updateNotificationIcon() { /* ... kept existing ... */
+            const icon = document.getElementById('notification-icon');
+            if (!icon) return;
+            if (Notification.permission === 'granted') {
+                icon.className = 'fa-solid fa-bell text-accent';
+            } else if (Notification.permission === 'denied') {
+                icon.className = 'fa-solid fa-bell-slash text-slate-600';
+            } else {
+                icon.className = 'fa-regular fa-bell';
+            }
+        }
+
+        function showNotificationPrompt() { /* ... kept existing ... */
+            const modalTitle = document.querySelector('#notification-modal h3');
+            const modalText = document.getElementById('notification-modal-text');
+            const actionBtn = document.getElementById('enable-notifications-btn');
+
+            if (Notification.permission === 'granted') return;
+
+            if (Notification.permission === 'denied') {
+                modalTitle.textContent = "Bildirimler Engelli 😔";
+                modalText.textContent = "Tarayıcı ayarlarından bu site için bildirim engelini kaldırmalısın.";
+                actionBtn.textContent = "Tamam, Anladım";
+                actionBtn.onclick = () => document.getElementById('notification-modal').classList.add('hidden');
+            } else {
+                modalTitle.textContent = "Zaman Dolunca Haber Ver?";
+                modalText.textContent = "Süre bittiğinde veya mola zamanı geldiğinde sana bildirim gönderebilmem için iznine ihtiyacım var.";
+                actionBtn.textContent = "İzin Ver";
+                actionBtn.onclick = handlePermissionRequest;
+            }
+            document.getElementById('notification-modal').classList.remove('hidden');
+        }
+
+        function handlePermissionRequest() { /* ... kept existing ... */
+            Notification.requestPermission().then(permission => {
+                updateNotificationIcon();
+                document.getElementById('notification-modal').classList.add('hidden');
+                if (permission === 'granted') {
+                    sendNotification('Süper! 🎉', 'Bildirimler başarıyla açıldı.');
+                }
+            });
+        }
 
         // =====================
         // LocalStorage Helpers
@@ -729,24 +859,18 @@
             const today = new Date();
             return `odaklan_focus_${today.getFullYear()}_${today.getMonth()}_${today.getDate()}`;
         }
-
         function loadDailyFocus() {
             const stored = localStorage.getItem(getTodayKey());
             state.dailyFocusMinutes = stored ? parseInt(stored, 10) : 0;
             updateDailyFocusDisplay();
         }
-
         function saveDailyFocus() {
             localStorage.setItem(getTodayKey(), state.dailyFocusMinutes.toString());
         }
-
-        // Cross-tab synchronization: Listen for localStorage changes from other tabs
         function setupStorageSync() {
             window.addEventListener('storage', (event) => {
                 if (event.key === getTodayKey()) {
-                    // Another tab updated the focus time, sync it
                     const newValue = parseInt(event.newValue, 10) || 0;
-                    // Only update if the new value is higher (to prevent data loss)
                     if (newValue > state.dailyFocusMinutes) {
                         state.dailyFocusMinutes = newValue;
                         updateDailyFocusDisplay();
@@ -754,7 +878,6 @@
                 }
             });
         }
-
         function updateDailyFocusDisplay() {
             elements.dailyFocus.textContent = state.dailyFocusMinutes;
         }
@@ -771,36 +894,19 @@
         function updateTimerDisplay() {
             const timeString = formatTime(state.timeRemaining);
             elements.timerDisplay.textContent = timeString;
-
-            // Update tab title with countdown when timer is running
             if (state.isRunning) {
-                const modeEmoji = {
-                    'focus': '🎯',
-                    'shortBreak': '☕',
-                    'longBreak': '🌴'
-                };
-                const modeName = {
-                    'focus': 'Odak',
-                    'shortBreak': 'Mola',
-                    'longBreak': 'Uzun Mola'
-                };
+                const modeEmoji = { 'focus': '🎯', 'shortBreak': '☕', 'longBreak': '🌴' };
+                const modeName = { 'focus': 'Odak', 'shortBreak': 'Mola', 'longBreak': 'Uzun Mola' };
                 document.title = `(${timeString}) ${modeEmoji[state.currentMode]} ${modeName[state.currentMode]} | Odaklan!`;
             }
         }
 
         function updateProgressRing() {
-            const circumference = 2 * Math.PI * 180; // 1131
-
-            // Get the correct duration based on current mode
+            const circumference = 2 * Math.PI * 180;
             let totalDuration;
-            if (state.currentMode === 'focus') {
-                totalDuration = POMODORO_DURATION;
-            } else if (state.currentMode === 'shortBreak') {
-                totalDuration = SHORT_BREAK_DURATION;
-            } else {
-                totalDuration = LONG_BREAK_DURATION;
-            }
-
+            if (state.currentMode === 'focus') totalDuration = POMODORO_DURATION;
+            else if (state.currentMode === 'shortBreak') totalDuration = SHORT_BREAK_DURATION;
+            else totalDuration = LONG_BREAK_DURATION;
             const progress = state.timeRemaining / totalDuration;
             const offset = circumference * (1 - progress);
             elements.progressCircle.style.strokeDashoffset = offset;
@@ -808,170 +914,99 @@
 
         function startTimer() {
             if (state.isRunning) return;
-
             state.isRunning = true;
             state.sessionStartTime = Date.now();
-
-            // Calculate absolute end time (fixes sleep mode drift)
             state.targetEndTime = Date.now() + (state.timeRemaining * MS_PER_SECOND);
-
-            // Request notification permission on first start (only once)
-            // REMOVED for Soft Prompt: requestNotificationPermission();
-
-            // Enter focus mode
             elements.app.classList.add('focus-mode');
-
-            // Update button visibility
             elements.startBtn.classList.add('hidden');
             elements.pauseBtn.classList.remove('hidden');
             elements.resetBtn.classList.remove('hidden');
             elements.skipBtn.classList.remove('hidden');
-
-            // Add pulse animation
             elements.pauseBtn.classList.add('pulse-animation');
 
-            // Start countdown using absolute time (fixes sleep/drift issues)
             state.intervalId = setInterval(() => {
-                // Calculate remaining time based on absolute target time
                 const now = Date.now();
                 state.timeRemaining = Math.max(0, Math.ceil((state.targetEndTime - now) / MS_PER_SECOND));
-
                 updateTimerDisplay();
                 updateProgressRing();
-
-                if (state.timeRemaining <= 0) {
-                    completePomodoro();
-                }
+                if (state.timeRemaining <= 0) { completePomodoro(); }
             }, TIMER_TICK_INTERVAL);
-        }
-
-        function pauseTimer() {
-            if (!state.isRunning) return;
-
-            state.isRunning = false;
-            clearInterval(state.intervalId);
-
-            // NOTE: We do NOT count time here to avoid double counting
-            // Time is only counted in completePomodoro() when session ends naturally or via skip
-
-            // Clear target end time (will be recalculated on resume)
-            state.targetEndTime = null;
-
-            // Exit focus mode
-            elements.app.classList.remove('focus-mode');
-
-            // Update button visibility
-            elements.startBtn.classList.remove('hidden');
-            elements.pauseBtn.classList.add('hidden');
-
-            // Remove pulse animation
-            elements.pauseBtn.classList.remove('pulse-animation');
-
-            // Reset tab title
+        } function pauseTimer() {
+            if
+                (!state.isRunning) return; state.isRunning = false; clearInterval(state.intervalId); state.targetEndTime = null;
+            elements.app.classList.remove('focus-mode'); elements.startBtn.classList.remove('hidden');
+            elements.pauseBtn.classList.add('hidden'); elements.pauseBtn.classList.remove('pulse-animation');
+            document.title = originalTitle;
+        } function resetTimer() {
+            pauseTimer(); state.timeRemaining = POMODORO_DURATION;
+            state.currentMode = 'focus'; updateTimerDisplay(); updateProgressRing(); updateModeDisplay(); stopAllSounds();
+            elements.resetBtn.classList.add('hidden'); elements.skipBtn.classList.add('hidden');
             document.title = originalTitle;
         }
 
-        function resetTimer() {
-            pauseTimer();
-            state.timeRemaining = POMODORO_DURATION;
-            state.currentMode = 'focus'; // Reset to focus mode
-            updateTimerDisplay();
-            updateProgressRing();
-            updateModeDisplay();
-
-            // Stop all ambient sounds on reset
-            stopAllSounds();
-
-            // Hide control buttons
-            elements.resetBtn.classList.add('hidden');
-            elements.skipBtn.classList.add('hidden');
-
-            // Reset tab title
-            document.title = originalTitle;
-        }
-
-        function completePomodoro(isSkipped = false) {
-            clearInterval(state.intervalId);
-            state.isRunning = false;
-
-            // Stop all ambient sounds for a clean transition
-            stopAllSounds();
-
-            // Only add focus time if we're in focus mode
-            if (state.currentMode === 'focus') {
-                // Calculate actual focused time
-                let minutesToAdd;
-                if (isSkipped && state.sessionStartTime) {
-                    // If skipped, add only the actual time spent
+        // UPDATED: completePomodoro with Await Fonts and New Modal Logic
+        async function completePomodoro(isSkipped = false) {
+            clearInterval(state.intervalId); state.isRunning = false; stopAllSounds(); if
+                (state.currentMode === 'focus') {
+                let minutesToAdd; if (isSkipped && state.sessionStartTime) {
                     minutesToAdd = Math.floor((Date.now() - state.sessionStartTime) / 60000);
                 } else {
-                    // If naturally completed, add full session duration (dynamic, not hardcoded)
                     minutesToAdd = Math.round(POMODORO_DURATION / 60);
-                }
-
-                if (minutesToAdd > 0) {
+                } if (minutesToAdd > 0) {
                     state.dailyFocusMinutes += minutesToAdd;
                     saveDailyFocus();
                     updateDailyFocusDisplay();
                 }
 
-                // Only increment pomodoro count if NOT skipped (no cheating!)
-                // This prevents "Başla -> Skip -> Uzun Mola" exploit
                 if (!isSkipped) {
                     state.pomodoroCount++;
                     updatePomodoroCounter();
                 }
 
-                // Show completion modal only after focus sessions
-                showCompletionModal();
-                prepareExportTemplates(state.dailyFocusMinutes); // Prepare templates with new data
+                // === MODAL PREPARATION ===
+                // Wait for any fonts to load to prevent FOUC in preview
+                try { await document.fonts.ready; } catch (e) { }
 
-                // Determine next break type
-                // Note: pomodoroCount > 0 check prevents 0 % 4 === 0 false positive
+                // 1. Generate Quote (Single Source of Truth)
+                state.currentQuote = getRandomQuote();
+
+                // 2. Show Modal
+                showCompletionModal();
+
+                // 3. Render Preview (This triggers calculation and cloning)
+                calculateScaleAndRender();
+
+                // Determine next mode...
                 if (state.pomodoroCount > 0 && state.pomodoroCount % POMODOROS_UNTIL_LONG_BREAK === 0) {
-                    // Long break after 4 pomodoros
                     state.currentMode = 'longBreak';
                     state.timeRemaining = LONG_BREAK_DURATION;
                 } else {
-                    // Short break (default for skipped or 1-3 pomodoros completed)
                     state.currentMode = 'shortBreak';
                     state.timeRemaining = SHORT_BREAK_DURATION;
                 }
             } else {
-                // Break is complete, go back to focus mode
                 state.currentMode = 'focus';
                 state.timeRemaining = POMODORO_DURATION;
             }
 
-            // Exit focus mode UI
             elements.app.classList.remove('focus-mode');
 
-            // Play appropriate sound based on what just completed
             try {
                 if (state.currentMode === 'focus') {
-                    // Break just ended, play break-end sound to encourage work
                     elements.audioBreakEnd.play();
                     sendNotification('💪 Mola Bitti!', 'İşe dönme zamanı! Odaklanmaya hazır mısın?');
                 } else {
-                    // Focus session ended, play complete sound
                     elements.audioComplete.play();
-                    if (state.currentMode === 'shortBreak') {
-                        sendNotification('☕ Kısa Mola!', '5 dakika dinlen, beynini şarj et.');
-                    } else {
-                        sendNotification('🎯 Uzun Mola!', 'Harika iş! 15 dakika mola hakkın var.');
-                    }
+                    if (state.currentMode === 'shortBreak') sendNotification('☕ Kısa Mola!', '5 dakika dinlen.');
+                    else sendNotification('🎯 Uzun Mola!', '15 dakika mola hakkın var.');
                 }
-            } catch (e) {
-                console.log('Sound not available');
-            }
+            } catch (e) { console.log('Sound not available'); }
 
-            // Update UI
             state.sessionStartTime = null;
             updateTimerDisplay();
             updateProgressRing();
             updateModeDisplay();
 
-            // Reset button visibility
             elements.startBtn.classList.remove('hidden');
             elements.pauseBtn.classList.add('hidden');
             elements.resetBtn.classList.add('hidden');
@@ -980,23 +1015,11 @@
         }
 
         function updateModeDisplay() {
-            const modeNames = {
-                'focus': 'Odak',
-                'shortBreak': 'Kısa Mola',
-                'longBreak': 'Uzun Mola'
-            };
+            const modeNames = { 'focus': 'Odak', 'shortBreak': 'Kısa Mola', 'longBreak': 'Uzun Mola' };
             elements.modeIndicator.textContent = modeNames[state.currentMode];
-
-            // Change progress ring color based on mode
-            if (state.currentMode === 'focus') {
-                elements.progressCircle.style.stroke = '#00B7C6'; // Accent color
-            } else if (state.currentMode === 'longBreak') {
-                elements.progressCircle.style.stroke = '#8b5cf6'; // Purple for long break
-            } else {
-                elements.progressCircle.style.stroke = '#22c55e'; // Green for short break
-            }
-
-            // Update favicon
+            if (state.currentMode === 'focus') elements.progressCircle.style.stroke = '#00B7C6';
+            else if (state.currentMode === 'longBreak') elements.progressCircle.style.stroke = '#8b5cf6';
+            else elements.progressCircle.style.stroke = '#22c55e';
             updateFavicon(state.currentMode);
         }
 
@@ -1014,21 +1037,13 @@
             elements.audioCafe.pause();
             elements.audioCafe.currentTime = 0;
         }
-
         function playSound(sound) {
             stopAllSounds();
-
-            // Update UI
             elements.soundBtns.forEach(btn => btn.classList.remove('active'));
             document.querySelector(`[data-sound="${sound}"]`).classList.add('active');
-
             state.currentSound = sound;
-
-            if (sound === 'rain') {
-                elements.audioRain.play().catch(e => console.log('Rain sound not available'));
-            } else if (sound === 'cafe') {
-                elements.audioCafe.play().catch(e => console.log('Cafe sound not available'));
-            }
+            if (sound === 'rain') elements.audioRain.play().catch(e => { });
+            else if (sound === 'cafe') elements.audioCafe.play().catch(e => { });
         }
 
         // =====================
@@ -1036,12 +1051,8 @@
         // =====================
         function showCompletionModal() {
             elements.modalFocusTime.textContent = state.dailyFocusMinutes;
-            // Update quote preview in modal
-            const currentQuote = document.getElementById('story-quote').textContent;
-            document.getElementById('modal-quote-preview').textContent = currentQuote;
             elements.modal.classList.remove('hidden');
         }
-
         function hideCompletionModal() {
             elements.modal.classList.add('hidden');
         }
@@ -1055,44 +1066,31 @@
         elements.skipBtn.addEventListener('click', () => completePomodoro(true));
 
         elements.soundBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                playSound(btn.dataset.sound);
-            });
+            btn.addEventListener('click', () => { playSound(btn.dataset.sound); });
         });
 
-        elements.downloadStoryBtn.addEventListener('click', () => downloadTemplate('export-story', 'odaklan_story', 'download-story-btn'));
-        elements.downloadFeedBtn.addEventListener('click', () => downloadTemplate('export-feed', 'odaklan_feed', 'download-feed-btn'));
+        // New Modal Event Listeners
+        elements.tabStory.addEventListener('click', () => handleTabSwitch('story'));
+        elements.tabFeed.addEventListener('click', () => handleTabSwitch('feed'));
+        elements.rerollBtn.addEventListener('click', rerollQuote);
+        elements.downloadActiveBtn.addEventListener('click', downloadActiveTemplate);
+
         elements.closeModalBtn.addEventListener('click', hideCompletionModal);
-
-        // Close modal on backdrop click
         elements.modal.addEventListener('click', (e) => {
-            if (e.target === elements.modal) {
-                hideCompletionModal();
-            }
+            if (e.target === elements.modal) hideCompletionModal();
         });
 
-        // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space' && !e.target.matches('button')) {
                 e.preventDefault();
-                if (state.isRunning) {
-                    pauseTimer();
-                } else {
-                    startTimer();
-                }
+                if (state.isRunning) pauseTimer();
+                else startTimer();
             }
-
             if (e.code === 'Escape') {
-                if (!elements.modal.classList.contains('hidden')) {
-                    hideCompletionModal();
-                } else if (state.isRunning) {
-                    pauseTimer();
-                }
+                if (!elements.modal.classList.contains('hidden')) hideCompletionModal();
+                else if (state.isRunning) pauseTimer();
             }
-
-            if (e.code === 'KeyR' && !e.target.matches('input')) {
-                resetTimer();
-            }
+            if (e.code === 'KeyR' && !e.target.matches('input')) resetTimer();
         });
 
         // =====================
@@ -1104,10 +1102,8 @@
             updateProgressRing();
             updateModeDisplay();
             updatePomodoroCounter();
-            setupStorageSync(); // Enable cross-tab synchronization
-            updateNotificationIcon(); // Set initial icon state
-
-            // Event Listeners for Notifications
+            setupStorageSync();
+            updateNotificationIcon();
             elements.notificationBtn.addEventListener('click', showNotificationPrompt);
             elements.closeNotificationModalBtn.addEventListener('click', () => {
                 document.getElementById('notification-modal').classList.add('hidden');

@@ -37,8 +37,9 @@ Minimalist Pomodoro zamanlayıcı uygulaması. Odaklanmanızı artırın, üretk
 ### Takip & Paylaşım
 - **📊 Günlük Takip** - LocalStorage ile günlük odak sürenizi takip edin
 - **🔄 Sekme Senkronizasyonu** - Birden fazla sekmede açıksa veriler senkronize kalır
+- **🏆 Kupa Odası (The Trophy Room)** - Görev tamamlandığında Instagram Hikaye ve Yatay mod arasında geçiş yapılabilen, canlı önizlemeli (Mirror Effect) gelişmiş paylaşım ekranı ve "Zar At" özelliği ile motivasyon sözünü değiştirebilme imkanı.
 - **📤 Paylaşım Kartı** - Başarınızı PNG olarak indirip sosyal medyada paylaşın
-- **📱 Responsive Tasarım** - iOS Safari dahil tüm cihazlarda mükemmel görünüm (100dvh desteği)
+- **📱 Responsive Tasarım** - iOS Safari dahil tüm cihazlarda mükemmel görünüm (100dvh desteği & Overflow koruması)
 
 ### Teknik Özellikler
 - **💤 Uyku Modu Dayanıklı** - Bilgisayar uyku moduna girse bile zamanlayıcı doğru çalışır
