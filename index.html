@@ -281,7 +281,9 @@
                 </div>
 
                 <div class="border-t border-slate-700 pt-6">
-                    <div class="flex items-center justify-center gap-2 text-sm text-slate-400">
+                    <p id="modal-quote-preview" class="text-slate-400 italic font-light mb-4 text-sm px-4">"Zafer,
+                        inananlarındır."</p>
+                    <div class="flex items-center justify-center gap-2 text-sm text-slate-500">
                         <span class="text-accent font-semibold">Odaklan!</span>
                         <span>ile güçlendirildi</span>
                     </div>
@@ -355,28 +357,29 @@
                 <div
                     class="w-[600px] h-[600px] rounded-full border-[16px] border-slate-800 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
                 </div>
-                <div
-                    class="w-[600px] h-[600px] rounded-full border-[16px] border-accent/20 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse">
-                </div>
-
-                <!-- Time -->
-                <div class="relative z-10 flex flex-col items-center justify-center h-[600px]">
-                    <span class="text-9xl font-bold font-mono tracking-tighter text-white"
-                        style="font-size: 14rem; font-family: 'JetBrains Mono', monospace;" id="story-time">00:00</span>
-                    <span class="text-4xl text-slate-400 mt-4 tracking-widest uppercase">Odak Süresi</span>
-                </div>
+            </div>
+            <div
+                class="w-[600px] h-[600px] rounded-full border-[16px] border-accent/20 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-50">
             </div>
 
-            <p id="story-quote" class="text-4xl text-slate-300 max-w-2xl leading-relaxed italic opacity-90 font-light">
-                "Zafer, inananlarındır."
-            </p>
+            <!-- Time -->
+            <div class="relative z-10 flex flex-col items-center justify-center h-[600px]">
+                <span class="font-bold font-mono tracking-tighter text-white text-[14rem] leading-none pb-8"
+                    style="font-family: 'JetBrains Mono', monospace;" id="story-time">00:00</span>
+                <span class="text-4xl text-slate-400 tracking-widest uppercase">Odak Süresi</span>
+            </div>
         </div>
 
-        <!-- Bottom: Footer -->
-        <div class="text-center opacity-60">
-            <div class="w-24 h-1 bg-accent mx-auto mb-8"></div>
-            <p class="text-3xl tracking-widest uppercase text-slate-500">Disiplin & İrade</p>
-        </div>
+        <p id="story-quote" class="text-4xl text-slate-300 max-w-2xl leading-relaxed italic opacity-90 font-light">
+            "Zafer, inananlarındır."
+        </p>
+    </div>
+
+    <!-- Bottom: Footer -->
+    <div class="text-center opacity-60">
+        <div class="w-24 h-1 bg-accent mx-auto mb-8"></div>
+        <p class="text-3xl tracking-widest uppercase text-slate-500">Disiplin & İrade</p>
+    </div>
     </div>
 
     <!-- 2. Feed Template (1920x1080) -->
@@ -578,15 +581,25 @@
             document.getElementById('feed-quote').textContent = `"${getRandomQuote()}"`;
         }
 
-        async function downloadTemplate(templateId, filename) {
+        async function downloadTemplate(templateId, filename, btnId) {
             const element = document.getElementById(templateId);
-            if (!element) return;
+            const btn = document.getElementById(btnId);
+            if (!element || !btn) return;
+
+            // Loading State
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-2xl"></i><span class="text-sm">Hazırlanıyor...</span>`;
 
             try {
+                // Ensure fonts are loaded before rendering
+                await document.fonts.ready;
+
                 const canvas = await html2canvas(element, {
-                    scale: 2, // High resolution
+                    scale: 1, // Standard resolution (1080p is enough)
                     useCORS: true,
-                    backgroundColor: '#0f172a' // Slate-900
+                    backgroundColor: '#0f172a', // Slate-900
+                    logging: false
                 });
 
                 const link = document.createElement('a');
@@ -596,6 +609,10 @@
             } catch (err) {
                 console.error('Export failed:', err);
                 alert('Görsel oluşturulamadı. Lütfen tekrar deneyin.');
+            } finally {
+                // Restore Button State
+                btn.innerHTML = originalText;
+                btn.disabled = false;
             }
         }
 
@@ -998,6 +1015,9 @@
         // =====================
         function showCompletionModal() {
             elements.modalFocusTime.textContent = state.dailyFocusMinutes;
+            // Update quote preview in modal
+            const currentQuote = document.getElementById('story-quote').textContent;
+            document.getElementById('modal-quote-preview').textContent = currentQuote;
             elements.modal.classList.remove('hidden');
         }
 
@@ -1019,8 +1039,8 @@
             });
         });
 
-        elements.downloadStoryBtn.addEventListener('click', () => downloadTemplate('export-story', 'odaklan_story'));
-        elements.downloadFeedBtn.addEventListener('click', () => downloadTemplate('export-feed', 'odaklan_feed'));
+        elements.downloadStoryBtn.addEventListener('click', () => downloadTemplate('export-story', 'odaklan_story', 'download-story-btn'));
+        elements.downloadFeedBtn.addEventListener('click', () => downloadTemplate('export-feed', 'odaklan_feed', 'download-feed-btn'));
         elements.closeModalBtn.addEventListener('click', hideCompletionModal);
 
         // Close modal on backdrop click
