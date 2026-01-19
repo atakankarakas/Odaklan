@@ -169,7 +169,7 @@
         <div class="w-full max-w-lg flex flex-col items-center gap-4 mb-2 shrink-0 relative z-20">
 
             <!-- Top Row: Bell and Stats -->
-            <div class="w-full flex items-center justify-between relative z-30 pointer-events-none">
+            <div class="w-full flex items-center justify-between relative z-30">
                 <!-- Bell Icon (Explicitly Clickable) -->
                 <button id="notification-btn"
                     class="p-3 -ml-2 text-slate-400 hover:text-accent transition-colors relative z-50 pointer-events-auto active:scale-95 touch-manipulation"
@@ -1266,6 +1266,17 @@
         elements.pauseBtn.addEventListener('click', pauseTimer);
         elements.resetBtn.addEventListener('click', resetTimer);
         elements.skipBtn.addEventListener('click', () => completePomodoro(true));
+
+        // Notification Button Listener (Manual Click)
+        // Wrapped in arrow function to ensure safe execution
+        elements.notificationBtn.addEventListener('click', () => {
+            // Force check capability inside the click handler for iOS safety
+            if ('Notification' in window) {
+                showNotificationPrompt(false);
+            } else {
+                alert('Tarayıcınız bildirimleri desteklemiyor, ancak sesli uyarılar çalışacak.');
+            }
+        });
 
         elements.soundBtns.forEach(btn => {
             btn.addEventListener('click', () => { playSound(btn.dataset.sound); });
