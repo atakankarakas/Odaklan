@@ -308,6 +308,7 @@
 
         let state = {
             timeRemaining: POMODORO_DURATION,
+            targetEndTime: null, // Absolute time when timer should end (for sleep mode fix)
             isRunning: false,
             intervalId: null,
             currentSound: 'mute',
@@ -491,6 +492,9 @@
             state.isRunning = true;
             state.sessionStartTime = Date.now();
 
+            // Calculate absolute end time (fixes sleep mode drift)
+            state.targetEndTime = Date.now() + (state.timeRemaining * 1000);
+
             // Request notification permission on first start (only once)
             requestNotificationPermission();
 
@@ -506,16 +510,19 @@
             // Add pulse animation
             elements.pauseBtn.classList.add('pulse-animation');
 
-            // Start countdown
+            // Start countdown using absolute time (fixes sleep/drift issues)
             state.intervalId = setInterval(() => {
-                state.timeRemaining--;
+                // Calculate remaining time based on absolute target time
+                const now = Date.now();
+                state.timeRemaining = Math.max(0, Math.ceil((state.targetEndTime - now) / 1000));
+
                 updateTimerDisplay();
                 updateProgressRing();
 
                 if (state.timeRemaining <= 0) {
                     completePomodoro();
                 }
-            }, 1000);
+            }, 250); // Check more frequently for accuracy
         }
 
         function pauseTimer() {
@@ -534,6 +541,9 @@
                 }
                 state.sessionStartTime = null;
             }
+
+            // Clear target end time (will be recalculated on resume)
+            state.targetEndTime = null;
 
             // Exit focus mode
             elements.app.classList.remove('focus-mode');
