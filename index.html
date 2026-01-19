@@ -253,6 +253,11 @@
                     data-sound="cafe" title="Kafe Sesi">
                     <i class="fa-solid fa-mug-hot"></i>
                 </button>
+                <button id="sound-fireplace"
+                    class="sound-btn w-12 h-12 rounded-full flex items-center justify-center text-slate-300 hover:bg-slate-700 transition-all"
+                    data-sound="fireplace" title="Şömine Sesi">
+                    <i class="fa-solid fa-fire-flame-curved"></i>
+                </button>
             </div>
         </div>
 
@@ -326,7 +331,7 @@
                         title="Sözü Değiştir">
                         <i
                             class="fa-solid fa-dice text-xl text-accent group-hover:rotate-180 transition-transform duration-500"></i>
-                        <span class="hidden text-sm sm:inline">Değiştir</span>
+                        <span class="hidden text-sm sm:inline">Sözü Değiştir</span>
                     </button>
 
                     <button id="download-active-btn"
@@ -406,6 +411,9 @@
                     class="text-5xl text-slate-200 font-light italic leading-normal max-w-3xl mx-auto opacity-90">
                     "Zafer, inananlarındır."
                 </p>
+                <p id="story-author" class="text-2xl text-accent font-medium mt-6 tracking-widest uppercase opacity-80">
+                    — Cahit Zarifoğlu
+                </p>
                 <div class="w-32 h-1.5 bg-accent mx-auto mt-12 rounded-full opacity-80"></div>
             </div>
         </div>
@@ -431,7 +439,7 @@
             </div>
 
             <!-- Timer Ring -->
-            <div class="relative w-[600px] h-[600px] flex items-center justify-center">
+            <div class="relative w-[500px] h-[500px] flex items-center justify-center my-auto">
                 <!-- Static Ring Background -->
                 <div class="absolute inset-0 rounded-full border-[20px] border-slate-800"></div>
                 <!-- Accent Ring (Static Opacity) -->
@@ -464,6 +472,10 @@
                 <p id="feed-quote" class="text-5xl leading-tight font-light text-slate-200 italic">
                     "Vatanını en çok seven, görevini en iyi yapandır."
                 </p>
+                <p id="feed-author"
+                    class="text-xl text-accent font-medium mt-6 tracking-widest uppercase opacity-80 text-right mr-4">
+                    — M.K. Atatürk
+                </p>
                 <div class="w-32 h-1.5 bg-accent mx-auto mt-12 rounded-full opacity-80"></div>
             </div>
         </div>
@@ -482,6 +494,9 @@
     <audio id="audio-break-end" preload="auto">
         <source src="assets/sounds/break-end.mp3" type="audio/mpeg">
     </audio>
+    <audio id="audio-fireplace" loop preload="auto">
+        <source src="assets/sounds/fireplace.mp3" type="audio/mpeg">
+    </audio>
 
     <script>
         // =====================
@@ -494,16 +509,37 @@
 
         // Motivation Quotes (Culture & Discipline)
         const motivationQuotes = [
-            "Vatanını en çok seven, görevini en iyi yapandır.",
-            "İki günü eşit olan ziyandadır.",
-            "Kader, gayrete aşıktır.",
-            "Hiç ölmeyecekmiş gibi dünya için çalış.",
-            "Zafer, inananlarındır.",
-            "Azim ve irade.",
-            "Zaman kılıçtır, sen onu kesmezsen o seni keser.",
-            "Disiplin, özgürlüktür.",
-            "Başlamak, bitirmenin yarısıdır.",
-            "Emek olmadan yemek olmaz."
+            { text: "Vatanını en çok seven, görevini en iyi yapandır.", author: "M. Kemal Atatürk" },
+            { text: "İki günü eşit olan ziyandadır.", author: "Hadis-i Şerif" },
+            { text: "Kader, gayrete aşıktır.", author: "Anonim" },
+            { text: "İnsan için ancak çalıştığının karşılığı vardır.", author: "Necm Suresi, 39" },
+            { text: "Gevşemeyin, üzülmeyin. İnanıyorsanız üstün gelirsiniz.", author: "Âl-i İmrân Suresi, 139" },
+            { text: "Hiç ölmeyecekmiş gibi dünya için çalış.", author: "Hadis-i Şerif" },
+            { text: "Zafer, inananlarındır.", author: "Anonim" },
+            { text: "Niyet hayır, akıbet hayır.", author: "Atasözü" },
+            { text: "Azim ve irade, aşılmaz engelleri aşar.", author: "Sultan II. Abdülhamid" },
+            { text: "Zaman kılıçtır, sen onu kesmezsen o seni keser.", author: "İmam Şafii" },
+            { text: "Yol uzun, dava büyük", author: "Nuri Pakdil" },
+            { text: "Sabır acıdır, meyvesi tatlıdır.", author: "Sadi Şirazi" },
+            { text: "İşleyen demir pas tutmaz.", author: "Atasözü" },
+            { text: "Muhtaç olduğun kudret, damarlarındaki asil kanda mevcuttur.", author: "M. Kemal Atatürk" },
+            { text: "Erteleyenler helak oldu.", author: "Kelam-ı Kibar" },
+            { text: "Emek olmadan yemek olmaz.", author: "Atasözü" },
+            { text: "Korkma, Allah bizimledir.", author: "Tevbe Suresi, 40" },
+            { text: "Başına gelenlere sabret.", author: "Lokman Suresi, 17" },
+            { text: "Allah kuluna kafi değil mi?", author: "Zümer Suresi, 36" },
+            { text: "Allah işini güzel yapanı sever.", author: "Hadis-i Şerif" },
+            { text: "İmkanın sınırını görmek için imkansızı denemek lazım.", author: "Fatih Sultan Mehmet" },
+            { text: "Sabır boyun eğmek değil, mücadele etmektir.", author: "Hz. Ömer (r.a.)" },
+            { text: "Himmet kuşak, gayret etek; işle ki murada eresin.", author: "Hoca Ahmed Yesevi" },
+            { text: "Ey oğul, sabretmesini bil. Vaktinden önce çiçek açmaz.", author: "Şeyh Edebali" },
+            { text: "Zaferin büyüklüğü, mücadelenin zorluğu ile ölçülür.", author: "Anonim" },
+            { text: "Kolaylaştırınız, zorlaştırmayınız.", author: "Hadis-i Şerif" },
+            { text: "Mümin bal arısı gibidir. Temiz yer ve temiz şeyler üretir.", author: "Hadis-i Şerif" },
+            { text: "İlim ilim bilmektir, ilim kendin bilmektir.", author: "Yunus Emre" },
+            { text: "Birlikte rahmet, ayrılıkta azap vardır.", author: "Hadis-i Şerif" },
+            { text: "Dünya bir tarladır, mahsulü ahirette alınır.", author: "Mevlana" },
+            { text: "Yapmak, söylemekten hayırlıdır.", author: "Atasözü" }
         ];
 
         // Time constants
@@ -523,7 +559,7 @@
             hasRequestedPermission: false,
             titleFlashInterval: null,
             // New State Properties
-            currentQuote: "", // Single Source of Truth for the session quote
+            currentQuote: { text: "Zafer, inananlarındır.", author: "Cahit Zarifoğlu" }, // Object default
             activeTab: 'story' // 'story' or 'feed'
         };
 
@@ -554,6 +590,7 @@
             soundBtns: document.querySelectorAll('.sound-btn'),
             audioRain: document.getElementById('audio-rain'),
             audioCafe: document.getElementById('audio-cafe'),
+            audioFireplace: document.getElementById('audio-fireplace'),
             audioComplete: document.getElementById('audio-complete'),
             audioBreakEnd: document.getElementById('audio-break-end'),
 
@@ -588,10 +625,23 @@
         // ... (Notification functions kept as is, abbreviating for clarity if possible, but keeping full logic)
         function requestNotificationPermission() { /* ... */ } // Not used currently due to soft prompt
 
+        let currentNotification = null;
+
         function sendNotification(title, body) {
             if ('Notification' in window && Notification.permission === 'granted') {
                 try {
-                    new Notification(title, { body: body, icon: favicons.focus, tag: 'odaklan-notification' });
+                    // Close previous notification to ensure fresh popup
+                    if (currentNotification) {
+                        currentNotification.close();
+                    }
+
+                    // Removed 'tag' to force a new notification instance every time
+                    // Timestamp added to ensure uniqueness if needed, though without tag it's default.
+                    currentNotification = new Notification(title, {
+                        body: body,
+                        icon: favicons.focus,
+                        requireInteraction: true // Optional: keeps it on screen until user interacts
+                    });
                 } catch (e) { }
             }
             flashTitle(title);
@@ -641,17 +691,20 @@
 
             // Update Story Master
             document.getElementById('story-time').textContent = dailyTimeStr;
-            document.getElementById('story-quote').textContent = `"${quote}"`;
+            document.getElementById('story-quote').textContent = `"${quote.text}"`;
+            document.getElementById('story-author').textContent = `— ${quote.author}`;
 
             // Update Feed Master
             document.getElementById('feed-time').textContent = dailyTimeStr;
-            document.getElementById('feed-quote').textContent = `"${quote}"`;
+            document.getElementById('feed-quote').textContent = `"${quote.text}"`;
+            document.getElementById('feed-author').textContent = `— ${quote.author}`;
         }
 
         function calculateScaleAndRender() {
             // 1. Get container dimensions
             const container = elements.previewWrapper.parentElement; // The flexible container
             const containerWidth = container.clientWidth;
+            const containerHeight = container.clientHeight;
 
             // 2. Determine target template
             const targetId = state.activeTab === 'story' ? 'export-story' : 'export-feed';
@@ -661,9 +714,11 @@
             const originalWidth = state.activeTab === 'story' ? 1080 : 1920;
             const originalHeight = state.activeTab === 'story' ? 1920 : 1080;
 
-            // 4. Calculate Scale
-            // Add some padding/margin safety logic if needed, but simple ratio works best for full width
-            const scale = containerWidth / originalWidth;
+            // 4. Calculate Scale (Contain Strategy)
+            // We use 90% of available space to give it some "breathing room" (margin)
+            const scaleX = containerWidth / originalWidth;
+            const scaleY = containerHeight / originalHeight;
+            const scale = Math.min(scaleX, scaleY) * 0.9;
 
             // 5. Update Preview Wrapper content & style
             elements.previewWrapper.innerHTML = ''; // Clear previous
@@ -673,12 +728,7 @@
 
             const clone = masterElement.cloneNode(true);
 
-            // Clean up clone: Remove IDs to prevent duplicates in DOM
-            // (Optional but good practice, though styling relies on classes so it should look fine)
-            // But we used IDs for easy updating in updateMasterTemplates.
-            // Since we aren't querying the clone by ID for logic, it's "okay" but technically invalid HTML.
-            // A safer bet involves stripping IDs or accepting the risk for this specific visual-only clone.
-            // We'll keep it simple: Clone is just prompt for visual.
+            // Clean up clone
             clone.id = 'preview-clone';
             clone.style.position = 'absolute'; // Overwrite fixed
             clone.style.top = '0';
@@ -692,8 +742,10 @@
             elements.previewWrapper.appendChild(clone);
 
             // 6. Phantom Space Fix & Scaling
-            elements.previewWrapper.style.width = '100%';
-            elements.previewWrapper.style.height = `${originalHeight * scale}px`; // Explicit height set
+            // Set wrapper size exactly to the visual size of the scaled element
+            // This allows the parent flexbox to center it perfectly
+            elements.previewWrapper.style.width = `${originalWidth * scale}px`;
+            elements.previewWrapper.style.height = `${originalHeight * scale}px`;
 
             clone.style.transformOrigin = 'top left';
             clone.style.transform = `scale(${scale})`;
@@ -749,7 +801,7 @@
             // Generate new quote
             let newQuote = getRandomQuote();
             // Ensure distinct from current if possible (simple check)
-            while (newQuote === state.currentQuote && motivationQuotes.length > 1) {
+            while (newQuote.text === state.currentQuote.text && motivationQuotes.length > 1) {
                 newQuote = getRandomQuote();
             }
             state.currentQuote = newQuote;
@@ -922,7 +974,14 @@
             elements.pauseBtn.classList.remove('hidden');
             elements.resetBtn.classList.remove('hidden');
             elements.skipBtn.classList.remove('hidden');
+            elements.resetBtn.classList.remove('hidden');
+            elements.skipBtn.classList.remove('hidden');
             elements.pauseBtn.classList.add('pulse-animation');
+
+            // Resume sound if needed
+            if (state.currentSound !== 'mute') {
+                playSound(state.currentSound);
+            }
 
             state.intervalId = setInterval(() => {
                 const now = Date.now();
@@ -994,13 +1053,35 @@
             try {
                 if (state.currentMode === 'focus') {
                     elements.audioBreakEnd.play();
+                    // Resume ambience after notification if selected
+                    if (state.currentSound !== 'mute') {
+                        elements.audioBreakEnd.onended = () => {
+                            // Only resume if timer hasn't started yet and sound is still selected
+                            if (!state.isRunning && state.currentSound !== 'mute') {
+                                playSound(state.currentSound);
+                                // We need to pause it again because playSound effectively starts it immediately
+                                // But here we WANT it to start immediately as per user request ("devam etmesi")
+                                // If the user prefers it to only play *during* timer, we should wait.
+                                // User said: "sesin bildirimden sonra devam etmesi" (sound should continue after notification).
+                                // This implies auto-resume.
+                            }
+                        };
+                    }
                     sendNotification('💪 Mola Bitti!', 'İşe dönme zamanı! Odaklanmaya hazır mısın?');
                 } else {
                     elements.audioComplete.play();
+                    // Resume ambience after notification if selected
+                    if (state.currentSound !== 'mute') {
+                        elements.audioComplete.onended = () => {
+                            if (!state.isRunning && state.currentSound !== 'mute') {
+                                playSound(state.currentSound);
+                            }
+                        };
+                    }
                     if (state.currentMode === 'shortBreak') sendNotification('☕ Kısa Mola!', '5 dakika dinlen.');
                     else sendNotification('🎯 Uzun Mola!', '15 dakika mola hakkın var.');
                 }
-            } catch (e) { console.log('Sound not available'); }
+            } catch (e) { console.log('Sound not available', e); }
 
             state.sessionStartTime = null;
             updateTimerDisplay();
@@ -1036,6 +1117,8 @@
             elements.audioRain.currentTime = 0;
             elements.audioCafe.pause();
             elements.audioCafe.currentTime = 0;
+            elements.audioFireplace.pause();
+            elements.audioFireplace.currentTime = 0;
         }
         function playSound(sound) {
             stopAllSounds();
@@ -1044,6 +1127,7 @@
             state.currentSound = sound;
             if (sound === 'rain') elements.audioRain.play().catch(e => { });
             else if (sound === 'cafe') elements.audioCafe.play().catch(e => { });
+            else if (sound === 'fireplace') elements.audioFireplace.play().catch(e => { });
         }
 
         // =====================
