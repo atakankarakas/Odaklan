@@ -13,14 +13,28 @@ Minimalist Pomodoro zamanlayıcı uygulaması. Odaklanmanızı artırın, üretk
 
 ## ✨ Özellikler
 
+### Temel Özellikler
 - **🕐 Pomodoro Zamanlayıcı** - 25 dakikalık odak seansları
-- **🎯 Odak Modu** - Zamanlayıcı çalışırken dikkat dağıtıcı elemanlar otomatik olarak soluklaşır
-- **🎵 Ambient Sesler** - Yağmur ve kafe sesi ile odaklanmanızı artırın
+- **☕ Kısa Mola** - Her pomodoro sonunda 5 dakika mola
+- **🎯 Uzun Mola** - Her 4 pomodoro sonunda 15 dakika mola
+- **🎯 Odak Modu** - Zamanlayıcı çalışırken dikkat dağıtıcı elemanlar otomatik soluklaşır
+- **⏩ İleri Sar** - Seansı anında tamamlayın (gerçek geçen süre sayılır)
+
+### Ambient Sesler
+- **🔇 Sessiz Mod**
+- **🌧️ Yağmur Sesi** - Rahatlatıcı yağmur ambiyansı
+- **☕ Kafe Sesi** - Kahve dükkanı atmosferi
+
+### Akıllı Bildirimler
+- **🔔 Tarayıcı Bildirimleri** - Mola ve odak değişimlerinde bildirim
+- **🎨 Dinamik Favicon** - Mod değişiminde sekme ikonu değişir
+  - 🔵 Turkuaz (Odak) | 🟢 Yeşil (Kısa Mola) | 🟣 Mor (Uzun Mola)
+- **🔊 Farklı Sesler** - Odak bitişi ve mola bitişi için ayrı sesler
+
+### Takip & Paylaşım
 - **📊 Günlük Takip** - LocalStorage ile günlük odak sürenizi takip edin
+- **📤 Paylaşım Kartı** - Başarınızı PNG olarak indirip sosyal medyada paylaşın
 - **📱 Responsive Tasarım** - Tüm cihazlarda mükemmel görünüm
-- **🔔 Bitiş Bildirimi** - Seans tamamlandığında sesli ve görsel bildirim
-- **📤 Paylaşım Kartı** - Başarınızı sosyal medyada paylaşın (png olarak indir)
-- **⌨️ Klavye Kısayolları** - Space (başlat/durdur), Escape, R (sıfırla)
 
 ## 🚀 Kurulum
 
@@ -45,9 +59,10 @@ Odaklan/
 ├── index.html          # Ana uygulama dosyası (HTML + CSS + JS)
 ├── assets/
 │   └── sounds/
-│       ├── rain.mp3    # Yağmur ambient sesi
-│       ├── cafe.mp3    # Kafe ambient sesi
-│       └── complete.mp3# Bitiş bildirim sesi
+│       ├── rain.mp3      # Yağmur ambient sesi
+│       ├── cafe.mp3      # Kafe ambient sesi
+│       ├── complete.mp3  # Odak bitiş sesi
+│       └── break-end.mp3 # Mola bitiş sesi
 ├── preview.png         # GitHub önizleme görseli
 ├── README.md           # Bu dosya
 └── LICENSE             # MIT Lisansı
@@ -61,7 +76,9 @@ Odaklan/
 |---------|-------|
 | Arka Plan | `#0f172a` (Slate 900) |
 | Metin Rengi | `#e2e8f0` (Slate 200) |
-| Vurgu Rengi | `#00B7C6` (Türk Turkuazı) |
+| Odak Rengi | `#00B7C6` (Türk Turkuazı) |
+| Kısa Mola | `#22c55e` (Yeşil) |
+| Uzun Mola | `#8b5cf6` (Mor) |
 | Sayaç Fontu | JetBrains Mono |
 | Metin Fontu | Inter |
 
@@ -73,6 +90,14 @@ Odaklan/
 | `Escape` | Durdur / Modalı kapat |
 | `R` | Sıfırla |
 
+## 🔄 Pomodoro Döngüsü
+
+```
+Odak (25dk) → Kısa Mola (5dk) → Odak → Kısa Mola → Odak → Kısa Mola → Odak → Uzun Mola (15dk) → tekrar...
+```
+
+Her 4 pomodoro'da bir uzun mola hak kazanırsınız!
+
 ## 🛠️ Teknolojiler
 
 - **HTML5** - Yapı
@@ -81,6 +106,7 @@ Odaklan/
 - **Font Awesome** - İkonlar (CDN)
 - **html2canvas** - Paylaşım kartı oluşturma (CDN)
 - **Google Fonts** - JetBrains Mono & Inter
+- **Web Notifications API** - Tarayıcı bildirimleri
 
 ## 📝 Lisans
 

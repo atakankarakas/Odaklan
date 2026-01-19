@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Odaklan! | Pomodoro Timer</title>
     <meta name="description" content="Minimalist Pomodoro zamanlayıcı ile odaklanmanızı artırın.">
+    <link id="favicon" rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%2300B7C6'/><text x='50' y='62' font-size='40' text-anchor='middle' fill='white'>O</text></svg>">
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -291,6 +293,9 @@
     <audio id="audio-complete" preload="auto">
         <source src="assets/sounds/complete.mp3" type="audio/mpeg">
     </audio>
+    <audio id="audio-break-end" preload="auto">
+        <source src="assets/sounds/break-end.mp3" type="audio/mpeg">
+    </audio>
 
     <script>
         // =====================
@@ -313,6 +318,42 @@
         };
 
         // =====================
+        // Favicon SVGs (Data URIs)
+        // =====================
+        const favicons = {
+            focus: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%2300B7C6'/><text x='50' y='65' font-size='45' text-anchor='middle' fill='white'>▶</text></svg>",
+            shortBreak: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%2322c55e'/><text x='50' y='65' font-size='40' text-anchor='middle' fill='white'>☕</text></svg>",
+            longBreak: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%238b5cf6'/><text x='50' y='65' font-size='40' text-anchor='middle' fill='white'>🎯</text></svg>",
+            idle: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%2300B7C6'/><text x='50' y='62' font-size='40' text-anchor='middle' fill='white'>O</text></svg>"
+        };
+
+        // =====================
+        // Notification Helpers
+        // =====================
+        function requestNotificationPermission() {
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
+        }
+
+        function sendNotification(title, body) {
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification(title, {
+                    body: body,
+                    icon: favicons.focus,
+                    tag: 'odaklan-notification'
+                });
+            }
+        }
+
+        function updateFavicon(mode) {
+            const favicon = document.getElementById('favicon');
+            if (favicon) {
+                favicon.href = favicons[mode] || favicons.idle;
+            }
+        }
+
+        // =====================
         // DOM Elements
         // =====================
         const elements = {
@@ -330,6 +371,7 @@
             audioRain: document.getElementById('audio-rain'),
             audioCafe: document.getElementById('audio-cafe'),
             audioComplete: document.getElementById('audio-complete'),
+            audioBreakEnd: document.getElementById('audio-break-end'),
             modal: document.getElementById('completion-modal'),
             modalFocusTime: document.getElementById('modal-focus-time'),
             shareBtn: document.getElementById('share-btn'),
@@ -507,11 +549,23 @@
             // Exit focus mode UI
             elements.app.classList.remove('focus-mode');
 
-            // Play completion sound (if available)
+            // Play appropriate sound based on what just completed
             try {
-                elements.audioComplete.play();
+                if (state.currentMode === 'focus') {
+                    // Break just ended, play break-end sound to encourage work
+                    elements.audioBreakEnd.play();
+                    sendNotification('💪 Mola Bitti!', 'İşe dönme zamanı! Odaklanmaya hazır mısın?');
+                } else {
+                    // Focus session ended, play complete sound
+                    elements.audioComplete.play();
+                    if (state.currentMode === 'shortBreak') {
+                        sendNotification('☕ Kısa Mola!', '5 dakika dinlen, beynini şarj et.');
+                    } else {
+                        sendNotification('🎯 Uzun Mola!', 'Harika iş! 15 dakika mola hakkın var.');
+                    }
+                }
             } catch (e) {
-                console.log('Completion sound not available');
+                console.log('Sound not available');
             }
 
             // Update UI
@@ -539,9 +593,14 @@
             // Change progress ring color based on mode
             if (state.currentMode === 'focus') {
                 elements.progressCircle.style.stroke = '#00B7C6'; // Accent color
+            } else if (state.currentMode === 'longBreak') {
+                elements.progressCircle.style.stroke = '#8b5cf6'; // Purple for long break
             } else {
-                elements.progressCircle.style.stroke = '#22c55e'; // Green for breaks
+                elements.progressCircle.style.stroke = '#22c55e'; // Green for short break
             }
+
+            // Update favicon
+            updateFavicon(state.currentMode);
         }
 
         function updatePomodoroCounter() {
@@ -666,6 +725,7 @@
             updateProgressRing();
             updateModeDisplay();
             updatePomodoroCounter();
+            requestNotificationPermission();
         }
 
         init();
