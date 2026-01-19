@@ -873,35 +873,38 @@
             }
         }
 
-        function showNotificationPrompt() { /* ... kept existing ... */
+        // Moved showNotificationPrompt and handlePermissionRequest to Smart Onboarding section below
+        // to keep logic consolidated.
+
+
+        function displayTestNotification() {
+            // Reuse the existing modal for the "Active" state message
+            const modal = document.getElementById('notification-modal');
             const modalTitle = document.querySelector('#notification-modal h3');
             const modalText = document.getElementById('notification-modal-text');
             const actionBtn = document.getElementById('enable-notifications-btn');
+            const closeLink = document.getElementById('close-notification-modal-btn');
 
-            if (Notification.permission === 'granted') return;
+            // 1. Customize Modal Content
+            modalTitle.textContent = "Sistem Aktif ve Hazır! 🫡";
+            modalText.textContent = "Bildirim altyapısı sorunsuz çalışıyor. Süre dolduğunda veya mola bittiğinde seni buradan uyaracağım.";
 
-            if (Notification.permission === 'denied') {
-                modalTitle.textContent = "Bildirimler Engelli 😔";
-                modalText.textContent = "Tarayıcı ayarlarından bu site için bildirim engelini kaldırmalısın.";
-                actionBtn.textContent = "Tamam, Anladım";
-                actionBtn.onclick = () => document.getElementById('notification-modal').classList.add('hidden');
-            } else {
-                modalTitle.textContent = "Zaman Dolunca Haber Ver?";
-                modalText.textContent = "Süre bittiğinde veya mola zamanı geldiğinde sana bildirim gönderebilmem için iznine ihtiyacım var.";
-                actionBtn.textContent = "İzin Ver";
-                actionBtn.onclick = handlePermissionRequest;
-            }
-            document.getElementById('notification-modal').classList.remove('hidden');
-        }
+            // 2. Customize Action Button
+            actionBtn.textContent = "Harika";
 
-        function handlePermissionRequest() { /* ... kept existing ... */
-            Notification.requestPermission().then(permission => {
-                updateNotificationIcon();
-                document.getElementById('notification-modal').classList.add('hidden');
-                if (permission === 'granted') {
-                    sendNotification('Süper! 🎉', 'Bildirimler başarıyla açıldı.');
-                }
-            });
+            // 3. Set Button Action to Close Modal
+            actionBtn.onclick = () => {
+                modal.classList.add('hidden');
+            };
+
+            // Hide the secondary "Cancel" link since this is just an info popup
+            if (closeLink) closeLink.classList.add('hidden');
+
+            // 4. Show Modal
+            modal.classList.remove('hidden');
+
+            // Optional: Restore the cancel link when modal closes (cleanup)
+            // We can handle this by ensuring showNotificationPrompt always resets the state, which it does.
         }
 
         // =====================
@@ -1142,9 +1145,102 @@
         }
 
         // =====================
+        // Smart Onboarding Logic
+        // =====================
+        function handleStartClick() {
+            // If already running or permission settled, just start/toggle
+            if (state.isRunning || Notification.permission === 'granted' || Notification.permission === 'denied') {
+                startTimer();
+                return;
+            }
+
+            // If permission is 'default' (never asked), show Onboarding Prompt
+            if (Notification.permission === 'default') {
+                showNotificationPrompt(true); // true = onboarding mode
+            }
+        }
+
+        function showNotificationPrompt(isOnboarding = false) {
+            const modalTitle = document.querySelector('#notification-modal h3');
+            const modalText = document.getElementById('notification-modal-text');
+            const actionBtn = document.getElementById('enable-notifications-btn');
+            const closeLink = document.getElementById('close-notification-modal-btn');
+
+            // Reset UI state
+            if (closeLink) closeLink.classList.remove('hidden');
+
+            if (Notification.permission === 'granted') {
+                // Interactive Feedback for Active State
+                displayTestNotification();
+                return;
+            }
+
+            if (Notification.permission === 'denied') {
+                modalTitle.textContent = "Bildirimler Engelli 😔";
+                modalText.textContent = "Tarayıcı ayarlarından bu site için bildirim engelini kaldırmalısın.";
+                actionBtn.textContent = "Tamam, Anladım";
+                actionBtn.onclick = () => document.getElementById('notification-modal').classList.add('hidden');
+            } else {
+                // Default / Onboarding State
+                if (isOnboarding) {
+                    modalTitle.textContent = "Derin Odaklanma Başlıyor! 🚀";
+                    modalText.textContent = "Süre dolduğunda seni uyarabilmem için bildirim izni vermen harika olur. Açmak ister misin?";
+                    actionBtn.textContent = "Aç ve Başla";
+
+                    // Special Handler for Onboarding
+                    actionBtn.onclick = () => {
+                        Notification.requestPermission().then(permission => {
+                            updateNotificationIcon();
+                            document.getElementById('notification-modal').classList.add('hidden');
+                            if (permission === 'granted') {
+                                sendNotification('Süper! 🎉', 'Bildirimler açıldı. Odaklanma başlıyor...');
+                            }
+                            // Auto-start timer regardless of decision to keep flow smooth
+                            startTimer();
+                        });
+                    };
+
+                    // Secondary Link: Just start without notifications
+                    if (closeLink) {
+                        closeLink.textContent = "Şimdilik Geç";
+                        closeLink.onclick = () => {
+                            document.getElementById('notification-modal').classList.add('hidden');
+                            startTimer();
+                        };
+                    }
+
+                } else {
+                    // Standard Manual Request (from Bell Icon)
+                    modalTitle.textContent = "Zaman Dolunca Haber Ver?";
+                    modalText.textContent = "Süre bittiğinde veya mola zamanı geldiğinde sana bildirim gönderebilmem için iznine ihtiyacım var.";
+                    actionBtn.textContent = "İzin Ver";
+                    actionBtn.onclick = handlePermissionRequest;
+
+                    if (closeLink) {
+                        closeLink.textContent = "Vazgeç";
+                        closeLink.onclick = () => document.getElementById('notification-modal').classList.add('hidden');
+                    }
+                }
+            }
+            document.getElementById('notification-modal').classList.remove('hidden');
+        }
+
+        function handlePermissionRequest() {
+            Notification.requestPermission().then(permission => {
+                updateNotificationIcon();
+                document.getElementById('notification-modal').classList.add('hidden');
+                if (permission === 'granted') {
+                    sendNotification('Süper! 🎉', 'Bildirimler başarıyla açıldı.');
+                }
+            });
+        }
+
+        // ... displayTestNotification ...
+
+        // =====================
         // Event Listeners
         // =====================
-        elements.startBtn.addEventListener('click', startTimer);
+        elements.startBtn.addEventListener('click', handleStartClick);
         elements.pauseBtn.addEventListener('click', pauseTimer);
         elements.resetBtn.addEventListener('click', resetTimer);
         elements.skipBtn.addEventListener('click', () => completePomodoro(true));
@@ -1188,7 +1284,7 @@
             updatePomodoroCounter();
             setupStorageSync();
             updateNotificationIcon();
-            elements.notificationBtn.addEventListener('click', showNotificationPrompt);
+            elements.notificationBtn.addEventListener('click', () => showNotificationPrompt(false));
             elements.closeNotificationModalBtn.addEventListener('click', () => {
                 document.getElementById('notification-modal').classList.add('hidden');
             });
