@@ -53,7 +53,10 @@
             font-family: 'Inter', sans-serif;
             background-color: #0f172a;
             color: #e2e8f0;
+            /* Modern viewport units for iOS Safari compatibility */
             min-height: 100vh;
+            min-height: 100dvh;
+            /* Dynamic viewport height - handles mobile address bar */
             overflow-x: hidden;
         }
 
@@ -299,12 +302,17 @@
 
     <script>
         // =====================
-        // State Management
+        // Configuration Constants (Single Source of Truth)
         // =====================
         const POMODORO_DURATION = 25 * 60; // 25 minutes in seconds
         const SHORT_BREAK_DURATION = 5 * 60; // 5 minutes in seconds
         const LONG_BREAK_DURATION = 15 * 60; // 15 minutes in seconds
         const POMODOROS_UNTIL_LONG_BREAK = 4;
+
+        // Time constants (eliminates magic numbers)
+        const MS_PER_SECOND = 1000;
+        const MS_PER_MINUTE = 60 * MS_PER_SECOND;
+        const TIMER_TICK_INTERVAL = 250; // ms - check frequently for accuracy
 
         let state = {
             timeRemaining: POMODORO_DURATION,
@@ -435,6 +443,21 @@
             localStorage.setItem(getTodayKey(), state.dailyFocusMinutes.toString());
         }
 
+        // Cross-tab synchronization: Listen for localStorage changes from other tabs
+        function setupStorageSync() {
+            window.addEventListener('storage', (event) => {
+                if (event.key === getTodayKey()) {
+                    // Another tab updated the focus time, sync it
+                    const newValue = parseInt(event.newValue, 10) || 0;
+                    // Only update if the new value is higher (to prevent data loss)
+                    if (newValue > state.dailyFocusMinutes) {
+                        state.dailyFocusMinutes = newValue;
+                        updateDailyFocusDisplay();
+                    }
+                }
+            });
+        }
+
         function updateDailyFocusDisplay() {
             elements.dailyFocus.textContent = state.dailyFocusMinutes;
         }
@@ -493,7 +516,7 @@
             state.sessionStartTime = Date.now();
 
             // Calculate absolute end time (fixes sleep mode drift)
-            state.targetEndTime = Date.now() + (state.timeRemaining * 1000);
+            state.targetEndTime = Date.now() + (state.timeRemaining * MS_PER_SECOND);
 
             // Request notification permission on first start (only once)
             requestNotificationPermission();
@@ -514,7 +537,7 @@
             state.intervalId = setInterval(() => {
                 // Calculate remaining time based on absolute target time
                 const now = Date.now();
-                state.timeRemaining = Math.max(0, Math.ceil((state.targetEndTime - now) / 1000));
+                state.timeRemaining = Math.max(0, Math.ceil((state.targetEndTime - now) / MS_PER_SECOND));
 
                 updateTimerDisplay();
                 updateProgressRing();
@@ -522,7 +545,7 @@
                 if (state.timeRemaining <= 0) {
                     completePomodoro();
                 }
-            }, 250); // Check more frequently for accuracy
+            }, TIMER_TICK_INTERVAL);
         }
 
         function pauseTimer() {
@@ -606,12 +629,13 @@
                 showCompletionModal();
 
                 // Determine next break type
-                if (state.pomodoroCount % POMODOROS_UNTIL_LONG_BREAK === 0) {
+                // Note: pomodoroCount > 0 check prevents 0 % 4 === 0 false positive
+                if (state.pomodoroCount > 0 && state.pomodoroCount % POMODOROS_UNTIL_LONG_BREAK === 0) {
                     // Long break after 4 pomodoros
                     state.currentMode = 'longBreak';
                     state.timeRemaining = LONG_BREAK_DURATION;
                 } else {
-                    // Short break
+                    // Short break (default for skipped or 1-3 pomodoros completed)
                     state.currentMode = 'shortBreak';
                     state.timeRemaining = SHORT_BREAK_DURATION;
                 }
@@ -800,6 +824,7 @@
             updateProgressRing();
             updateModeDisplay();
             updatePomodoroCounter();
+            setupStorageSync(); // Enable cross-tab synchronization
             // Note: Notification permission is requested on first timer start, not here
         }
 

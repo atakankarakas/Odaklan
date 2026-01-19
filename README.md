@@ -18,23 +18,31 @@ Minimalist Pomodoro zamanlayıcı uygulaması. Odaklanmanızı artırın, üretk
 - **☕ Kısa Mola** - Her pomodoro sonunda 5 dakika mola
 - **🎯 Uzun Mola** - Her 4 pomodoro sonunda 15 dakika mola
 - **🎯 Odak Modu** - Zamanlayıcı çalışırken dikkat dağıtıcı elemanlar otomatik soluklaşır
-- **⏩ İleri Sar** - Seansı anında tamamlayın (gerçek geçen süre sayılır)
+- **⏩ İleri Sar** - Seansı anında tamamlayın (gerçek geçen süre sayılır, hile yapılamaz!)
 
 ### Ambient Sesler
 - **🔇 Sessiz Mod**
 - **🌧️ Yağmur Sesi** - Rahatlatıcı yağmur ambiyansı
 - **☕ Kafe Sesi** - Kahve dükkanı atmosferi
+- **🔔 Akıllı Ses Yönetimi** - Seans bitince ambient sesler otomatik durur
 
 ### Akıllı Bildirimler
 - **🔔 Tarayıcı Bildirimleri** - Mola ve odak değişimlerinde bildirim
 - **🎨 Dinamik Favicon** - Mod değişiminde sekme ikonu değişir
   - 🔵 Turkuaz (Odak) | 🟢 Yeşil (Kısa Mola) | 🟣 Mor (Uzun Mola)
-- **🔊 Farklı Sesler** - Odak bitişi ve mola bitişi için ayrı sesler
+- **⏱️ Dinamik Sekme Başlığı** - Kalan süre sekme başlığında görünür: `(12:45) 🎯 Odak`
+- **📢 Başlık Yanıp Sönme** - iOS dahil tüm platformlarda çalışan bildirim
 
 ### Takip & Paylaşım
 - **📊 Günlük Takip** - LocalStorage ile günlük odak sürenizi takip edin
+- **🔄 Sekme Senkronizasyonu** - Birden fazla sekmede açıksa veriler senkronize kalır
 - **📤 Paylaşım Kartı** - Başarınızı PNG olarak indirip sosyal medyada paylaşın
-- **📱 Responsive Tasarım** - Tüm cihazlarda mükemmel görünüm
+- **📱 Responsive Tasarım** - iOS Safari dahil tüm cihazlarda mükemmel görünüm
+
+### Teknik Özellikler
+- **💤 Uyku Modu Dayanıklı** - Bilgisayar uyku moduna girse bile zamanlayıcı doğru çalışır
+- **🛡️ Hile Koruması** - Skip ile pomodoro sayacı artmaz, çift sayım hatası yok
+- **📐 Clean Code** - Magic number yok, tüm sabitler tek yerde tanımlı
 
 ## 🚀 Kurulum
 
@@ -50,8 +58,6 @@ cd Odaklan
 # index.html dosyasını tarayıcınızda açın
 ```
 
-Veya doğrudan `index.html` dosyasını tarayıcınızda açabilirsiniz.
-
 ## 📁 Proje Yapısı
 
 ```
@@ -64,13 +70,13 @@ Odaklan/
 │       ├── complete.mp3  # Odak bitiş sesi
 │       └── break-end.mp3 # Mola bitiş sesi
 ├── preview.png         # GitHub önizleme görseli
-├── README.md           # Bu dosya
-└── LICENSE             # MIT Lisansı
+├── README.md
+└── LICENSE
 ```
 
 ## 🎨 Tasarım Dili
 
-**Atakan UI** tasarım sistemi ile geliştirilmiştir:
+**Atakan UI** tasarım sistemi:
 
 | Özellik | Değer |
 |---------|-------|
@@ -93,10 +99,8 @@ Odaklan/
 ## 🔄 Pomodoro Döngüsü
 
 ```
-Odak (25dk) → Kısa Mola (5dk) → Odak → Kısa Mola → Odak → Kısa Mola → Odak → Uzun Mola (15dk) → tekrar...
+🎯 Odak (25dk) → ☕ Kısa Mola (5dk) → 🎯 → ☕ → 🎯 → ☕ → 🎯 → 🌴 Uzun Mola (15dk) → tekrar...
 ```
-
-Her 4 pomodoro'da bir uzun mola hak kazanırsınız!
 
 ## 🛠️ Teknolojiler
 
@@ -107,23 +111,20 @@ Her 4 pomodoro'da bir uzun mola hak kazanırsınız!
 - **html2canvas** - Paylaşım kartı oluşturma (CDN)
 - **Google Fonts** - JetBrains Mono & Inter
 - **Web Notifications API** - Tarayıcı bildirimleri
+- **Storage Event API** - Sekme senkronizasyonu
 
 ## 📝 Lisans
 
-Bu proje MIT Lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICENSE) dosyasına bakın.
+MIT Lisansı - [LICENSE](LICENSE)
 
 ## 💝 Destek
 
-Bu proje bağış usulü ile desteklenmektedir. Gelirin %10'u minnet borcu olarak **Mehmetçik Vakfı** ile paylaşılmaktadır.
+Bu proje bağış usulü ile desteklenmektedir. Gelirin %10'u **Mehmetçik Vakfı** ile paylaşılmaktadır.
 
 ## 👨‍💻 Geliştirici
 
-**Atakan Karakaş**
-
-- GitHub: [@atakankarakas](https://github.com/atakankarakas)
+**Atakan Karakaş** - [@atakankarakas](https://github.com/atakankarakas)
 
 ---
 
-<p align="center">
-  <sub>Made with ❤️ in Turkey</sub>
-</p>
+<p align="center">Made with ❤️ in Turkey</p>
