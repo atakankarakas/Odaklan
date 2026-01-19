@@ -1,25 +1,28 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Odaklan! | Pomodoro Timer</title>
     <meta name="description" content="Minimalist Pomodoro zamanlayıcı ile odaklanmanızı artırın.">
-    
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
+
     <!-- html2canvas -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    
+
     <script>
         tailwind.config = {
             theme: {
@@ -36,14 +39,14 @@
             }
         }
     </script>
-    
+
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: #0f172a;
@@ -51,93 +54,97 @@
             min-height: 100vh;
             overflow-x: hidden;
         }
-        
+
         .timer-font {
             font-family: 'JetBrains Mono', monospace;
         }
-        
+
         /* Focus Mode Transitions */
         .focusable {
             transition: opacity 0.5s ease;
         }
-        
+
         .focus-mode .focusable {
             opacity: 0.2;
         }
-        
+
         .focus-mode .always-visible {
             opacity: 1;
         }
-        
+
         /* Button Styles */
         .btn-accent {
             background-color: #00B7C6;
             color: #0f172a;
             transition: all 0.3s ease;
         }
-        
+
         .btn-accent:hover {
             background-color: #009aa8;
             transform: scale(1.02);
         }
-        
+
         .btn-accent:active {
             transform: scale(0.98);
         }
-        
+
         /* Sound Button Active State */
         .sound-btn.active {
             background-color: #00B7C6;
             color: #0f172a;
         }
-        
+
         /* Progress Ring */
         .progress-ring {
             transform: rotate(-90deg);
         }
-        
+
         .progress-ring__circle {
             transition: stroke-dashoffset 1s linear;
         }
-        
+
         /* Modal Styles */
         .modal-backdrop {
             background-color: rgba(15, 23, 42, 0.95);
             backdrop-filter: blur(8px);
         }
-        
+
         /* Share Card Styles */
         #share-card {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
         }
-        
+
         /* Pulse Animation */
         @keyframes pulse-accent {
-            0%, 100% {
+
+            0%,
+            100% {
                 box-shadow: 0 0 0 0 rgba(0, 183, 198, 0.4);
             }
+
             50% {
                 box-shadow: 0 0 0 15px rgba(0, 183, 198, 0);
             }
         }
-        
+
         .pulse-animation {
             animation: pulse-accent 2s infinite;
         }
     </style>
 </head>
+
 <body class="bg-slate-900 text-slate-200">
-    
+
     <!-- Main Container -->
     <div id="app" class="min-h-screen flex flex-col items-center justify-center relative px-4">
-        
+
         <!-- Header -->
         <header class="focusable absolute top-8 left-0 right-0 text-center">
             <h1 class="text-2xl font-semibold tracking-tight">
                 <span class="text-accent">Odaklan</span><span class="text-slate-400">!</span>
             </h1>
         </header>
-        
+
         <!-- Daily Focus Stats -->
         <div class="focusable absolute top-8 right-8">
             <div class="flex items-center gap-2 text-sm text-slate-400">
@@ -145,118 +152,87 @@
                 <span>Bugünkü Odak: <span id="daily-focus" class="text-accent font-medium">0</span> dk</span>
             </div>
         </div>
-        
+
         <!-- Hero Timer Section -->
         <main class="always-visible flex flex-col items-center justify-center flex-1">
-            
+
             <!-- Timer Display with Progress Ring -->
             <div class="relative mb-12">
                 <!-- Progress Ring SVG -->
                 <svg class="progress-ring w-80 h-80 md:w-96 md:h-96" viewBox="0 0 400 400">
                     <!-- Background Circle -->
-                    <circle
-                        cx="200"
-                        cy="200"
-                        r="180"
-                        fill="none"
-                        stroke="#1e293b"
-                        stroke-width="8"
-                    />
+                    <circle cx="200" cy="200" r="180" fill="none" stroke="#1e293b" stroke-width="8" />
                     <!-- Progress Circle -->
-                    <circle
-                        id="progress-circle"
-                        class="progress-ring__circle"
-                        cx="200"
-                        cy="200"
-                        r="180"
-                        fill="none"
-                        stroke="#00B7C6"
-                        stroke-width="8"
-                        stroke-linecap="round"
-                        stroke-dasharray="1131"
-                        stroke-dashoffset="0"
-                    />
+                    <circle id="progress-circle" class="progress-ring__circle" cx="200" cy="200" r="180" fill="none"
+                        stroke="#00B7C6" stroke-width="8" stroke-linecap="round" stroke-dasharray="1131"
+                        stroke-dashoffset="0" />
                 </svg>
-                
+
                 <!-- Timer Text -->
                 <div class="absolute inset-0 flex items-center justify-center">
-                    <span id="timer-display" class="timer-font text-7xl md:text-8xl font-bold text-slate-100 tracking-wider">
+                    <span id="timer-display"
+                        class="timer-font text-7xl md:text-8xl font-bold text-slate-100 tracking-wider">
                         25:00
                     </span>
                 </div>
             </div>
-            
+
             <!-- Control Buttons -->
             <div class="always-visible flex gap-4">
-                <button 
-                    id="start-btn" 
-                    class="btn-accent px-10 py-4 rounded-full text-lg font-semibold tracking-wide"
-                >
+                <button id="start-btn" class="btn-accent px-10 py-4 rounded-full text-lg font-semibold tracking-wide">
                     <i class="fa-solid fa-play mr-2"></i>
                     Başla
                 </button>
-                
-                <button 
-                    id="pause-btn" 
-                    class="hidden btn-accent px-10 py-4 rounded-full text-lg font-semibold tracking-wide"
-                >
+
+                <button id="pause-btn"
+                    class="hidden btn-accent px-10 py-4 rounded-full text-lg font-semibold tracking-wide">
                     <i class="fa-solid fa-pause mr-2"></i>
                     Durdur
                 </button>
-                
-                <button 
-                    id="reset-btn" 
-                    class="hidden bg-slate-800 hover:bg-slate-700 px-6 py-4 rounded-full text-lg font-medium text-slate-300 transition-all"
-                >
+
+                <button id="reset-btn"
+                    class="hidden bg-slate-800 hover:bg-slate-700 px-6 py-4 rounded-full text-lg font-medium text-slate-300 transition-all">
                     <i class="fa-solid fa-rotate-right"></i>
                 </button>
             </div>
-            
+
         </main>
-        
+
         <!-- Sound Controls -->
-        <div class="focusable absolute bottom-32 left-0 right-0 flex justify-center">
+        <div class="always-visible absolute bottom-32 left-0 right-0 flex justify-center">
             <div class="flex gap-2 bg-slate-800/50 p-2 rounded-full">
-                <button 
-                    id="sound-mute" 
+                <button id="sound-mute"
                     class="sound-btn active w-12 h-12 rounded-full flex items-center justify-center text-slate-300 hover:bg-slate-700 transition-all"
-                    data-sound="mute"
-                    title="Sessiz"
-                >
+                    data-sound="mute" title="Sessiz">
                     <i class="fa-solid fa-volume-xmark"></i>
                 </button>
-                <button 
-                    id="sound-rain" 
+                <button id="sound-rain"
                     class="sound-btn w-12 h-12 rounded-full flex items-center justify-center text-slate-300 hover:bg-slate-700 transition-all"
-                    data-sound="rain"
-                    title="Yağmur Sesi"
-                >
+                    data-sound="rain" title="Yağmur Sesi">
                     <i class="fa-solid fa-cloud-rain"></i>
                 </button>
-                <button 
-                    id="sound-cafe" 
+                <button id="sound-cafe"
                     class="sound-btn w-12 h-12 rounded-full flex items-center justify-center text-slate-300 hover:bg-slate-700 transition-all"
-                    data-sound="cafe"
-                    title="Kafe Sesi"
-                >
+                    data-sound="cafe" title="Kafe Sesi">
                     <i class="fa-solid fa-mug-hot"></i>
                 </button>
             </div>
         </div>
-        
+
         <!-- Footer -->
         <footer class="focusable absolute bottom-6 left-0 right-0 text-center">
             <p class="text-xs text-slate-500 opacity-50 px-4">
-                Geliştirici: Atakan Karakaş | Gelir modeli bağış usulüdür. %10'u minnet borcu olarak Mehmetçik Vakfı ile paylaşılır.
+                Geliştirici: Atakan Karakaş | Gelir modeli bağış usulüdür. %10'u minnet borcu olarak Mehmetçik Vakfı ile
+                paylaşılır.
             </p>
         </footer>
-        
+
     </div>
-    
+
     <!-- Completion Modal -->
     <div id="completion-modal" class="hidden fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-4">
         <div class="max-w-md w-full">
-            
+
             <!-- Share Card (This will be captured by html2canvas) -->
             <div id="share-card" class="bg-slate-800 rounded-3xl p-8 text-center mb-6">
                 <div class="mb-6">
@@ -268,7 +244,7 @@
                         Bugün <span id="modal-focus-time" class="text-accent font-bold">0</span> dakika odaklandın.
                     </p>
                 </div>
-                
+
                 <div class="border-t border-slate-700 pt-6">
                     <div class="flex items-center justify-center gap-2 text-sm text-slate-400">
                         <span class="text-accent font-semibold">Odaklan!</span>
@@ -276,27 +252,22 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Action Buttons -->
             <div class="flex gap-3">
-                <button 
-                    id="share-btn" 
-                    class="flex-1 btn-accent py-4 rounded-2xl font-semibold text-lg"
-                >
+                <button id="share-btn" class="flex-1 btn-accent py-4 rounded-2xl font-semibold text-lg">
                     <i class="fa-solid fa-share mr-2"></i>
                     Hikayende Paylaş
                 </button>
-                <button 
-                    id="close-modal-btn" 
-                    class="bg-slate-800 hover:bg-slate-700 px-6 py-4 rounded-2xl text-slate-300 transition-all"
-                >
+                <button id="close-modal-btn"
+                    class="bg-slate-800 hover:bg-slate-700 px-6 py-4 rounded-2xl text-slate-300 transition-all">
                     <i class="fa-solid fa-xmark text-xl"></i>
                 </button>
             </div>
-            
+
         </div>
     </div>
-    
+
     <!-- Audio Elements -->
     <audio id="audio-rain" loop preload="auto">
         <source src="assets/sounds/rain.mp3" type="audio/mpeg">
@@ -307,13 +278,13 @@
     <audio id="audio-complete" preload="auto">
         <source src="assets/sounds/complete.mp3" type="audio/mpeg">
     </audio>
-    
+
     <script>
         // =====================
         // State Management
         // =====================
         const POMODORO_DURATION = 25 * 60; // 25 minutes in seconds
-        
+
         let state = {
             timeRemaining: POMODORO_DURATION,
             isRunning: false,
@@ -322,7 +293,7 @@
             dailyFocusMinutes: 0,
             sessionStartTime: null
         };
-        
+
         // =====================
         // DOM Elements
         // =====================
@@ -344,7 +315,7 @@
             closeModalBtn: document.getElementById('close-modal-btn'),
             shareCard: document.getElementById('share-card')
         };
-        
+
         // =====================
         // LocalStorage Helpers
         // =====================
@@ -352,21 +323,21 @@
             const today = new Date();
             return `odaklan_focus_${today.getFullYear()}_${today.getMonth()}_${today.getDate()}`;
         }
-        
+
         function loadDailyFocus() {
             const stored = localStorage.getItem(getTodayKey());
             state.dailyFocusMinutes = stored ? parseInt(stored, 10) : 0;
             updateDailyFocusDisplay();
         }
-        
+
         function saveDailyFocus() {
             localStorage.setItem(getTodayKey(), state.dailyFocusMinutes.toString());
         }
-        
+
         function updateDailyFocusDisplay() {
             elements.dailyFocus.textContent = state.dailyFocusMinutes;
         }
-        
+
         // =====================
         // Timer Functions
         // =====================
@@ -375,53 +346,53 @@
             const secs = seconds % 60;
             return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
         }
-        
+
         function updateTimerDisplay() {
             elements.timerDisplay.textContent = formatTime(state.timeRemaining);
         }
-        
+
         function updateProgressRing() {
             const circumference = 2 * Math.PI * 180; // 1131
             const progress = state.timeRemaining / POMODORO_DURATION;
             const offset = circumference * (1 - progress);
             elements.progressCircle.style.strokeDashoffset = offset;
         }
-        
+
         function startTimer() {
             if (state.isRunning) return;
-            
+
             state.isRunning = true;
             state.sessionStartTime = Date.now();
-            
+
             // Enter focus mode
             elements.app.classList.add('focus-mode');
-            
+
             // Update button visibility
             elements.startBtn.classList.add('hidden');
             elements.pauseBtn.classList.remove('hidden');
             elements.resetBtn.classList.remove('hidden');
-            
+
             // Add pulse animation
             elements.pauseBtn.classList.add('pulse-animation');
-            
+
             // Start countdown
             state.intervalId = setInterval(() => {
                 state.timeRemaining--;
                 updateTimerDisplay();
                 updateProgressRing();
-                
+
                 if (state.timeRemaining <= 0) {
                     completePomodoro();
                 }
             }, 1000);
         }
-        
+
         function pauseTimer() {
             if (!state.isRunning) return;
-            
+
             state.isRunning = false;
             clearInterval(state.intervalId);
-            
+
             // Calculate focused time for this session
             if (state.sessionStartTime) {
                 const sessionMinutes = Math.floor((Date.now() - state.sessionStartTime) / 60000);
@@ -432,63 +403,63 @@
                 }
                 state.sessionStartTime = null;
             }
-            
+
             // Exit focus mode
             elements.app.classList.remove('focus-mode');
-            
+
             // Update button visibility
             elements.startBtn.classList.remove('hidden');
             elements.pauseBtn.classList.add('hidden');
-            
+
             // Remove pulse animation
             elements.pauseBtn.classList.remove('pulse-animation');
         }
-        
+
         function resetTimer() {
             pauseTimer();
             state.timeRemaining = POMODORO_DURATION;
             updateTimerDisplay();
             updateProgressRing();
-            
+
             // Hide reset button
             elements.resetBtn.classList.add('hidden');
         }
-        
+
         function completePomodoro() {
             clearInterval(state.intervalId);
             state.isRunning = false;
-            
+
             // Add 25 minutes for completed pomodoro
             state.dailyFocusMinutes += 25;
             saveDailyFocus();
             updateDailyFocusDisplay();
-            
+
             // Exit focus mode
             elements.app.classList.remove('focus-mode');
-            
+
             // Play completion sound (if available)
             try {
                 elements.audioComplete.play();
             } catch (e) {
                 console.log('Completion sound not available');
             }
-            
+
             // Show modal
             showCompletionModal();
-            
+
             // Reset timer state
             state.timeRemaining = POMODORO_DURATION;
             state.sessionStartTime = null;
             updateTimerDisplay();
             updateProgressRing();
-            
+
             // Reset button visibility
             elements.startBtn.classList.remove('hidden');
             elements.pauseBtn.classList.add('hidden');
             elements.resetBtn.classList.add('hidden');
             elements.pauseBtn.classList.remove('pulse-animation');
         }
-        
+
         // =====================
         // Sound Functions
         // =====================
@@ -498,23 +469,23 @@
             elements.audioCafe.pause();
             elements.audioCafe.currentTime = 0;
         }
-        
+
         function playSound(sound) {
             stopAllSounds();
-            
+
             // Update UI
             elements.soundBtns.forEach(btn => btn.classList.remove('active'));
             document.querySelector(`[data-sound="${sound}"]`).classList.add('active');
-            
+
             state.currentSound = sound;
-            
+
             if (sound === 'rain') {
                 elements.audioRain.play().catch(e => console.log('Rain sound not available'));
             } else if (sound === 'cafe') {
                 elements.audioCafe.play().catch(e => console.log('Cafe sound not available'));
             }
         }
-        
+
         // =====================
         // Modal Functions
         // =====================
@@ -522,11 +493,11 @@
             elements.modalFocusTime.textContent = state.dailyFocusMinutes;
             elements.modal.classList.remove('hidden');
         }
-        
+
         function hideCompletionModal() {
             elements.modal.classList.add('hidden');
         }
-        
+
         async function shareCard() {
             try {
                 const canvas = await html2canvas(elements.shareCard, {
@@ -534,13 +505,13 @@
                     scale: 2,
                     useCORS: true
                 });
-                
+
                 // Create download link
                 const link = document.createElement('a');
                 link.download = `odaklan-basari-${Date.now()}.png`;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
-                
+
                 // Close modal after download
                 setTimeout(hideCompletionModal, 500);
             } catch (error) {
@@ -548,30 +519,30 @@
                 alert('Görsel oluşturulurken bir hata oluştu.');
             }
         }
-        
+
         // =====================
         // Event Listeners
         // =====================
         elements.startBtn.addEventListener('click', startTimer);
         elements.pauseBtn.addEventListener('click', pauseTimer);
         elements.resetBtn.addEventListener('click', resetTimer);
-        
+
         elements.soundBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 playSound(btn.dataset.sound);
             });
         });
-        
+
         elements.shareBtn.addEventListener('click', shareCard);
         elements.closeModalBtn.addEventListener('click', hideCompletionModal);
-        
+
         // Close modal on backdrop click
         elements.modal.addEventListener('click', (e) => {
             if (e.target === elements.modal) {
                 hideCompletionModal();
             }
         });
-        
+
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space' && !e.target.matches('button')) {
@@ -582,7 +553,7 @@
                     startTimer();
                 }
             }
-            
+
             if (e.code === 'Escape') {
                 if (!elements.modal.classList.contains('hidden')) {
                     hideCompletionModal();
@@ -590,12 +561,12 @@
                     pauseTimer();
                 }
             }
-            
+
             if (e.code === 'KeyR' && !e.target.matches('input')) {
                 resetTimer();
             }
         });
-        
+
         // =====================
         // Initialization
         // =====================
@@ -604,9 +575,10 @@
             updateTimerDisplay();
             updateProgressRing();
         }
-        
+
         init();
     </script>
-    
+
 </body>
+
 </html>
