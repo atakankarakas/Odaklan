@@ -339,82 +339,103 @@
     <!-- EXPORT TEMPLATES (Hidden) -->
     <!-- 1. Story Template (1080x1920) -->
     <div id="export-story"
-        class="fixed top-0 left-[-9999px] w-[1080px] h-[1920px] bg-slate-900 text-slate-200 flex flex-col items-center justify-between p-24 z-[-1]"
+        class="fixed top-0 left-[-9999px] w-[1080px] h-[1920px] bg-slate-900 text-slate-200 flex flex-col justify-between items-center py-32 px-12 z-[-1]"
         style="font-family: 'Inter', sans-serif;">
-        <!-- Top: Header -->
-        <div class="text-center space-y-4">
-            <div class="inline-flex items-center gap-3 text-4xl font-semibold opacity-80">
-                <span class="text-accent">Odaklan</span><span>!</span>
+
+        <!-- TOP: Branding & Headline -->
+        <div class="flex flex-col items-center gap-12 w-full text-center mt-12">
+            <div
+                class="inline-flex items-center gap-4 text-5xl font-semibold opacity-80 tracking-widest text-slate-400">
+                <span>ODAKLAN</span><span class="text-accent">!</span>
             </div>
+            <h2 class="text-7xl font-bold tracking-[0.2em] text-accent uppercase mt-8">GÖREV TAMAM.</h2>
         </div>
 
-        <!-- Center: Content -->
-        <div class="text-center flex flex-col items-center gap-16">
-            <h2 id="story-headline" class="text-6xl font-bold tracking-[0.2em] text-accent uppercase">GÖREV TAMAM.</h2>
+        <!-- CENTER: Timer Ring & Quote -->
+        <div class="flex flex-col items-center justify-center w-full gap-16 relative">
 
-            <div class="relative">
-                <!-- Decorative Ring -->
-                <div
-                    class="w-[600px] h-[600px] rounded-full border-[16px] border-slate-800 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+            <!-- Ring Container -->
+            <div class="relative w-[800px] h-[800px] flex items-center justify-center">
+                <!-- Static Ring Background -->
+                <div class="absolute inset-0 rounded-full border-[24px] border-slate-800"></div>
+                <!-- Accent Ring (Static Opacity) -->
+                <div class="absolute inset-0 rounded-full border-[24px] border-accent opacity-20"></div>
+
+                <!-- Time & Label -->
+                <div class="flex flex-col items-center justify-center z-10">
+                    <span
+                        class="font-bold font-mono tracking-tighter text-white text-[130px] leading-none mb-6 drop-shadow-2xl"
+                        style="font-family: 'JetBrains Mono', monospace;" id="story-time">25:00</span>
+                    <span class="text-4xl font-medium text-slate-400 tracking-[0.2em] uppercase">Odak Süresi</span>
                 </div>
             </div>
-            <div
-                class="w-[600px] h-[600px] rounded-full border-[16px] border-accent/20 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-50">
-            </div>
 
-            <!-- Time -->
-            <div class="relative z-10 flex flex-col items-center justify-center h-[600px]">
-                <span class="font-bold font-mono tracking-tighter text-white text-[14rem] leading-none pb-8"
-                    style="font-family: 'JetBrains Mono', monospace;" id="story-time">00:00</span>
-                <span class="text-4xl text-slate-400 tracking-widest uppercase">Odak Süresi</span>
+            <!-- Quote -->
+            <div class="text-center px-8 mt-12">
+                <p id="story-quote"
+                    class="text-5xl text-slate-200 font-light italic leading-normal max-w-3xl mx-auto opacity-90">
+                    "Zafer, inananlarındır."
+                </p>
+                <div class="w-32 h-1.5 bg-accent mx-auto mt-12 rounded-full opacity-80"></div>
             </div>
         </div>
 
-        <p id="story-quote" class="text-4xl text-slate-300 max-w-2xl leading-relaxed italic opacity-90 font-light">
-            "Zafer, inananlarındır."
-        </p>
-    </div>
-
-    <!-- Bottom: Footer -->
-    <div class="text-center opacity-60">
-        <div class="w-24 h-1 bg-accent mx-auto mb-8"></div>
-        <p class="text-3xl tracking-widest uppercase text-slate-500">Disiplin & İrade</p>
-    </div>
+        <!-- BOTTOM: Footer Slogan -->
+        <div class="flex flex-col items-center gap-6 mb-12 opacity-60">
+            <p class="text-3xl font-semibold tracking-[0.3em] uppercase text-slate-500">Disiplin & İrade</p>
+        </div>
     </div>
 
     <!-- 2. Feed Template (1920x1080) -->
     <div id="export-feed"
-        class="fixed top-0 left-[-9999px] w-[1920px] h-[1080px] bg-slate-900 text-slate-200 flex items-center p-32 z-[-1]"
+        class="fixed top-0 left-[-9999px] w-[1920px] h-[1080px] bg-slate-900 text-slate-200 flex items-center justify-between p-24 z-[-1]"
         style="font-family: 'Inter', sans-serif;">
+
         <!-- Left: Stats & Branding -->
-        <div class="w-1/2 flex flex-col justify-center items-start border-r border-slate-800 pr-24 h-full">
-            <div class="text-6xl font-semibold mb-auto">
-                <span class="text-accent">Odaklan</span><span class="text-slate-500">!</span>
+        <div class="w-1/2 flex flex-col justify-between items-center h-full border-r border-slate-800 pr-24">
+
+            <!-- Branding -->
+            <div
+                class="inline-flex items-center gap-4 text-5xl font-semibold opacity-80 tracking-widest text-slate-400 self-start">
+                <span>ODAKLAN</span><span class="text-accent">!</span>
             </div>
 
-            <div class="my-auto">
-                <h2 id="feed-headline" class="text-5xl font-bold tracking-[0.15em] text-accent uppercase mb-8">SEBAT.
-                </h2>
-                <div class="text-[12rem] font-bold font-mono leading-none text-white tracking-tighter"
-                    style="font-family: 'JetBrains Mono', monospace;" id="feed-time">00:00</div>
-                <p class="text-3xl text-slate-500 mt-4 uppercase tracking-widest pl-2">Toplam Odak Süresi</p>
+            <!-- Timer Ring -->
+            <div class="relative w-[600px] h-[600px] flex items-center justify-center">
+                <!-- Static Ring Background -->
+                <div class="absolute inset-0 rounded-full border-[20px] border-slate-800"></div>
+                <!-- Accent Ring (Static Opacity) -->
+                <div class="absolute inset-0 rounded-full border-[20px] border-accent opacity-20"></div>
+
+                <!-- Time & Label -->
+                <div class="flex flex-col items-center justify-center z-10">
+                    <span
+                        class="font-bold font-mono tracking-tighter text-white text-[100px] leading-none mb-4 drop-shadow-2xl"
+                        style="font-family: 'JetBrains Mono', monospace;" id="feed-time">25:00</span>
+                    <span class="text-3xl font-medium text-slate-400 tracking-[0.25em] uppercase mt-8">Toplam
+                        Odak</span>
+                </div>
             </div>
 
-            <div class="mt-auto flex items-center gap-4 text-slate-600">
+            <!-- Footer -->
+            <div class="flex items-center gap-4 text-slate-600 self-start mt-auto">
                 <div class="h-px w-16 bg-accent"></div>
-                <span class="text-2xl uppercase tracking-widest">Modern & Asil</span>
+                <span class="text-2xl uppercase tracking-[0.2em] font-medium">Disiplin & İrade</span>
             </div>
         </div>
 
         <!-- Right: Motivation -->
         <div class="w-1/2 h-full flex flex-col justify-center items-center pl-24 text-center relative">
-            <i class="fa-solid fa-quote-left text-8xl text-slate-800 absolute top-0 left-24"></i>
+            <h2 id="feed-headline" class="text-8xl font-bold tracking-[0.15em] text-accent uppercase mb-24 opacity-90">
+                GÖREV TAMAM.</h2>
 
-            <p id="feed-quote" class="text-6xl leading-tight font-light text-slate-200 italic">
-                "Vatanını en çok seven, görevini en iyi yapandır."
-            </p>
-
-            <i class="fa-solid fa-quote-right text-8xl text-slate-800 absolute bottom-0 right-24"></i>
+            <div class="relative max-w-2xl">
+                <i class="fa-solid fa-quote-left text-6xl text-slate-800 absolute -top-16 -left-12 opacity-50"></i>
+                <p id="feed-quote" class="text-5xl leading-tight font-light text-slate-200 italic">
+                    "Vatanını en çok seven, görevini en iyi yapandır."
+                </p>
+                <div class="w-32 h-1.5 bg-accent mx-auto mt-12 rounded-full opacity-80"></div>
+            </div>
         </div>
     </div>
 
