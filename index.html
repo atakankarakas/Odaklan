@@ -1605,17 +1605,27 @@
             });
 
             // iOS Install Banner Logic
-            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            // Robust detection for iPhone, iPad (including those reporting as Mac), and iPod
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                (navigator.userAgent.includes("Mac") && navigator.maxTouchPoints > 1);
+
             const isInStandaloneMode = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-            const iosBannerDismissed = localStorage.getItem('ios_banner_dismissed');
+            // Changed key to v1 to force-show it for you again (resetting history)
+            const iosBannerDismissed = localStorage.getItem('ios_banner_dismissed_v1');
+
+            // Console log for debugging (visible if you connect to computer)
+            console.log("iOS Check:", { isIOS, isInStandaloneMode, iosBannerDismissed });
 
             if (isIOS && !isInStandaloneMode && !iosBannerDismissed) {
-                const iosBanner = document.getElementById('ios-install-banner');
-                iosBanner.classList.remove('hidden');
+                // Show after a small delay for better UX
+                setTimeout(() => {
+                    const iosBanner = document.getElementById('ios-install-banner');
+                    iosBanner.classList.remove('hidden');
+                }, 2000);
 
                 document.getElementById('close-ios-banner').addEventListener('click', () => {
-                    iosBanner.classList.add('hidden');
-                    localStorage.setItem('ios_banner_dismissed', 'true');
+                    document.getElementById('ios-install-banner').classList.add('hidden');
+                    localStorage.setItem('ios_banner_dismissed_v1', 'true');
                 });
             }
         }
