@@ -1962,42 +1962,6 @@
             }
             return null;
         }
-
-        // Enhanced notification sending with Service Worker fallback
-        async function sendNotificationEnhanced(title, body) {
-            // First try standard Notification API
-            if ('Notification' in window && Notification.permission === 'granted') {
-                try {
-                    // Close previous notification
-                    if (currentNotification) {
-                        currentNotification.close();
-                    }
-
-                    // Try Service Worker notification first (better for mobile)
-                    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-                        navigator.serviceWorker.controller.postMessage({
-                            type: 'SHOW_NOTIFICATION',
-                            title: title,
-                            body: body,
-                            tag: 'odaklan-timer-' + Date.now()
-                        });
-                    } else {
-                        // Fallback to standard notification
-                        currentNotification = new Notification(title, {
-                            body: body,
-                            icon: favicons.focus,
-                            badge: favicons.focus,
-                            vibrate: [200, 100, 200],
-                            requireInteraction: true,
-                            tag: 'odaklan-timer'
-                        });
-                    }
-                } catch (e) {
-                    console.log('Notification error:', e);
-                }
-            }
-            flashTitle(title);
-        }
         
         function init() {
             // Register Service Worker for notifications
