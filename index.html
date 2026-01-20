@@ -1021,6 +1021,7 @@
             currentMode: 'focus',
             hasRequestedPermission: false,
             titleFlashInterval: null,
+            updateToastShown: false, // Track if update toast has been shown
             // New State Properties
             currentQuote: { text: "Zafer, inananlarındır.", author: "Cahit Zarifoğlu" }, // Object default
             activeTab: 'story' // 'story' or 'feed'
@@ -1475,10 +1476,11 @@
             const now = new Date();
             const year = now.getFullYear();
             const month = now.getMonth();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
             let total = 0;
             
-            // Check all possible days in current month
-            for (let day = 1; day <= 31; day++) {
+            // Check all days in current month (using actual month length)
+            for (let day = 1; day <= daysInMonth; day++) {
                 const key = `odaklan_focus_${year}_${month}_${day}`;
                 const stored = localStorage.getItem(key);
                 if (stored) {
@@ -1493,10 +1495,11 @@
             const now = new Date();
             const year = now.getFullYear();
             const month = now.getMonth();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
             let total = 0;
             
-            // Check all possible days in current month
-            for (let day = 1; day <= 31; day++) {
+            // Check all days in current month (using actual month length)
+            for (let day = 1; day <= daysInMonth; day++) {
                 const key = `odaklan_pomodoro_${year}_${month}_${day}`;
                 const stored = localStorage.getItem(key);
                 if (stored) {
@@ -1550,7 +1553,7 @@
             
             if (paceComparison > 20) {
                 return {
-                    message: `Geçen ayın %${Math.round(paceComparison)} üstünde gidiyorsun! 🔥`,
+                    message: `Geçen ayın ${Math.round(paceComparison)}% üstünde gidiyorsun! 🔥`,
                     emoji: "🏆",
                     type: "positive"
                 };
@@ -2179,9 +2182,9 @@
         
         // Show subtle toast when update is available
         function showUpdateAvailableToast() {
-            // Only show once per session
-            if (window.updateToastShown) return;
-            window.updateToastShown = true;
+            // Only show once per session using state object
+            if (state.updateToastShown) return;
+            state.updateToastShown = true;
             
             const toast = document.createElement('div');
             toast.className = 'fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-accent text-slate-900 px-4 py-2 rounded-full text-sm font-medium shadow-lg z-50 cursor-pointer animate-bounce';

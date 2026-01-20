@@ -3,13 +3,6 @@
 const CACHE_VERSION = 2;
 const CACHE_NAME = `odaklan-v${CACHE_VERSION}`;
 
-// Get the base path dynamically for GitHub Pages compatibility
-const getBasePath = () => {
-  const swPath = self.location.pathname;
-  // Remove /sw.js from the path to get the base directory
-  return swPath.replace(/\/sw\.js$/, '') || '.';
-};
-
 // Resources to cache (relative paths for GitHub Pages subdirectory support)
 const urlsToCache = [
   './',
@@ -31,13 +24,11 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        // Use relative URLs that work with GitHub Pages subdirectory
-        const basePath = getBasePath();
+        // Convert relative URLs to absolute URLs for caching
         const absoluteUrls = urlsToCache.map(url => {
-          if (url.startsWith('./')) {
-            return new URL(url.substring(2), self.location.href).href;
-          }
-          return new URL(url, self.location.href).href;
+          // Remove leading './' and create absolute URL relative to service worker location
+          const cleanUrl = url.startsWith('./') ? url.substring(2) : url;
+          return new URL(cleanUrl, self.location.href).href;
         });
         return cache.addAll(absoluteUrls);
       })
