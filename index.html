@@ -1163,8 +1163,12 @@
         // =====================
         // Smart Onboarding Logic
         // =====================
+        // =====================
+        // Smart Onboarding Logic
+        // =====================
         function handleStartClick() {
             // Safety check for mobile/browsers without Notification API
+            // If missing, just start the timer without nagging (frictionless)
             if (!('Notification' in window)) {
                 startTimer();
                 return;
@@ -1270,11 +1274,17 @@
         // Notification Button Listener (Manual Click)
         // Wrapped in arrow function to ensure safe execution
         elements.notificationBtn.addEventListener('click', () => {
-            // Force check capability inside the click handler for iOS safety
+            // 1. Check for Standard Notification API
             if ('Notification' in window) {
                 showNotificationPrompt(false);
             } else {
-                alert('Tarayıcınız bildirimleri desteklemiyor, ancak sesli uyarılar çalışacak.');
+                // 2. iOS Fallback / Education
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                if (isIOS) {
+                    alert("iOS'ta bildirim almak için:\n\n1. 'Paylaş' butonuna basın.\n2. 'Ana Ekrana Ekle' seçeneğini seçin.\n3. Uygulamayı ana ekrandan açın.");
+                } else {
+                    alert('Tarayıcınız bildirimleri desteklemiyor, ancak sesli uyarılar çalışacak.');
+                }
             }
         });
 
