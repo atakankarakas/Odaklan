@@ -165,39 +165,58 @@
     <div id="app" class="min-h-screen flex flex-col items-center relative px-4 py-8 overflow-y-auto">
 
         <!-- Top Bar: Header & Stats -->
-        <!-- Simplified for Click Safety: Standard Flex Column -->
-        <div class="w-full max-w-lg flex flex-col items-center gap-4 mb-2 shrink-0 relative z-20">
+        <!-- Single Row Layout for Maximum Click Safety -->
+        <div class="w-full max-w-md flex items-center justify-between gap-4 mb-4 shrink-0 relative">
 
-            <!-- Top Row: Bell and Stats -->
-            <div class="w-full flex items-center justify-between relative z-30">
-                <!-- Bell Icon (Explicitly Clickable) -->
-                <button id="notification-btn"
-                    class="p-3 -ml-2 text-slate-400 hover:text-accent transition-colors relative z-50 pointer-events-auto active:scale-95 touch-manipulation"
-                    title="Bildirim Ayarları">
-                    <i id="notification-icon" class="fa-regular fa-bell text-2xl"></i>
-                </button>
+            <!-- Bell Icon (Large Touch Target) -->
+            <button id="notification-btn"
+                class="w-12 h-12 flex items-center justify-center text-slate-400 hover:text-accent transition-colors rounded-full bg-slate-800/50 border border-slate-700/30 active:scale-95 touch-manipulation"
+                title="Bildirim Ayarları">
+                <i id="notification-icon" class="fa-regular fa-bell text-xl"></i>
+            </button>
 
-                <!-- Stats (Explicitly Clickable) -->
-                <div
-                    class="pointer-events-auto relative z-50 flex items-center gap-2 text-sm text-slate-400 bg-slate-800/50 px-3 py-1.5 rounded-full border border-slate-700/30">
-                    <i class="fa-solid fa-fire text-accent text-sm"></i>
-                    <span id="daily-focus" class="text-accent font-medium text-base">0</span>
-                    <span class="text-xs">dk</span>
-                </div>
-            </div>
-
-            <!-- Title (Standard Flow - No Absolute) -->
-            <h1 class="text-4xl font-bold tracking-tight text-center text-slate-200 pointer-events-none select-none">
+            <!-- Title (Center) -->
+            <h1 class="text-2xl md:text-3xl font-bold tracking-tight text-center flex-1 select-none">
                 <span class="text-accent">Odaklan</span><span class="text-slate-400">!</span>
             </h1>
+
+            <!-- Stats (Right) - Clickable to open Stats Modal -->
+            <button id="stats-btn"
+                class="flex items-center gap-1.5 text-sm text-slate-400 bg-slate-800/50 px-3 py-1.5 rounded-full border border-slate-700/30 hover:bg-slate-700/50 hover:border-slate-600/50 transition-all cursor-pointer active:scale-95">
+                <i class="fa-solid fa-fire text-accent text-xs"></i>
+                <span id="daily-focus" class="text-accent font-medium">0</span>
+                <span class="text-xs">dk</span>
+            </button>
         </div>
 
         <!-- Hero Timer Section -->
-        <main class="always-visible flex flex-col items-center justify-center flex-1 w-full relative z-10 -mt-4">
+        <main class="always-visible flex flex-col items-center justify-center flex-1 w-full relative z-10">
+
+            <!-- Mode Selector - Clean, always visible text -->
+            <div class="flex bg-slate-800/30 rounded-full p-0.5 mb-4 text-xs">
+                <button id="mode-focus"
+                    class="mode-btn flex items-center gap-1.5 py-1.5 px-4 rounded-full font-semibold transition-all bg-accent text-slate-900"
+                    data-mode="focus">
+                    <i class="fa-solid fa-bullseye"></i>
+                    Odak
+                </button>
+                <button id="mode-short"
+                    class="mode-btn flex items-center gap-1.5 py-1.5 px-3 rounded-full font-medium text-slate-400 hover:text-slate-200 transition-all"
+                    data-mode="shortBreak">
+                    <i class="fa-solid fa-leaf"></i>
+                    Kısa
+                </button>
+                <button id="mode-long"
+                    class="mode-btn flex items-center gap-1.5 py-1.5 px-3 rounded-full font-medium text-slate-400 hover:text-slate-200 transition-all"
+                    data-mode="longBreak">
+                    <i class="fa-solid fa-bed"></i>
+                    Uzun
+                </button>
+            </div>
 
             <!-- Timer Display -->
-            <div class="relative mb-12 pointer-events-none select-none scale-90 md:scale-100">
-                <svg class="progress-ring w-80 h-80 md:w-96 md:h-96" viewBox="0 0 400 400">
+            <div class="relative mb-8 pointer-events-none select-none scale-90 md:scale-100">
+                <svg class="progress-ring w-72 h-72 md:w-80 md:h-80" viewBox="0 0 400 400">
                     <circle cx="200" cy="200" r="180" fill="none" stroke="#1e293b" stroke-width="8" />
                     <circle id="progress-circle" class="progress-ring__circle" cx="200" cy="200" r="180" fill="none"
                         stroke="#00B7C6" stroke-width="8" stroke-linecap="round" stroke-dasharray="1131"
@@ -205,73 +224,60 @@
                 </svg>
 
                 <div class="absolute inset-0 flex flex-col items-center justify-center">
-                    <span id="mode-indicator" class="text-sm font-medium text-accent mb-2 uppercase tracking-widest">
+                    <span id="mode-indicator" class="text-xs font-medium text-accent mb-1 uppercase tracking-widest">
                         Odak
                     </span>
                     <span id="timer-display"
-                        class="timer-font text-7xl md:text-8xl font-bold text-slate-100 tracking-wider">
+                        class="timer-font text-6xl md:text-7xl font-bold text-slate-100 tracking-wider">
                         25:00
                     </span>
-                    <span id="pomodoro-counter" class="text-xs text-slate-500 mt-2">
+                    <span id="pomodoro-counter" class="text-xs text-slate-500 mt-1">
                         0 / 4
                     </span>
                 </div>
             </div>
 
-            <!-- Start Button (High Margin & Index) -->
-            <div class="always-visible flex gap-4 relative z-50 pointer-events-auto mb-6">
+            <!-- Control Buttons - Minimal & Clean -->
+            <div class="always-visible flex items-center justify-center gap-2 relative z-50 pointer-events-auto">
                 <button id="start-btn"
-                    class="btn-accent px-12 py-5 rounded-full text-xl font-bold tracking-wide shadow-xl shadow-accent/20 active:scale-95 transition-transform touch-manipulation cursor-pointer">
-                    <i class="fa-solid fa-play mr-2"></i>
+                    class="btn-accent px-6 py-2.5 md:px-8 md:py-3 rounded-full text-base md:text-lg font-bold tracking-wide shadow-lg shadow-accent/20 active:scale-95 transition-transform touch-manipulation cursor-pointer">
+                    <i class="fa-solid fa-play mr-1.5"></i>
                     Başla
                 </button>
 
                 <button id="pause-btn"
-                    class="hidden btn-accent px-10 py-4 rounded-full text-lg font-semibold tracking-wide">
-                    <i class="fa-solid fa-pause mr-2"></i>
+                    class="hidden btn-accent px-5 py-2.5 md:px-7 md:py-3 rounded-full text-sm md:text-base font-semibold tracking-wide">
+                    <i class="fa-solid fa-pause mr-1"></i>
                     Durdur
                 </button>
 
                 <button id="reset-btn"
-                    class="hidden bg-slate-800 hover:bg-slate-700 px-6 py-4 rounded-full text-lg font-medium text-slate-300 transition-all"
+                    class="hidden w-10 h-10 flex items-center justify-center bg-slate-800 hover:bg-slate-700 rounded-full text-slate-300 transition-all"
                     title="Sıfırla">
-                    <i class="fa-solid fa-rotate-right"></i>
+                    <i class="fa-solid fa-rotate-right text-sm"></i>
                 </button>
 
                 <button id="skip-btn"
-                    class="hidden bg-slate-800 hover:bg-slate-700 px-6 py-4 rounded-full text-lg font-medium text-slate-300 transition-all"
-                    title="İleri Sar (Seansı Tamamla)">
-                    <i class="fa-solid fa-forward"></i>
+                    class="hidden w-10 h-10 flex items-center justify-center bg-slate-800 hover:bg-slate-700 rounded-full text-slate-300 transition-all"
+                    title="İleri Sar">
+                    <i class="fa-solid fa-forward text-sm"></i>
                 </button>
             </div>
 
         </main>
 
-        <!-- Sound Controls -->
-        <!-- Changed from absolute to flex item to prevent overlap on small screens -->
-        <div class="always-visible mb-6 mt-8 z-10">
-            <div class="flex gap-2 bg-slate-800/50 p-2 rounded-full backdrop-blur-sm">
-                <button id="sound-mute"
-                    class="sound-btn active w-12 h-12 rounded-full flex items-center justify-center text-slate-300 hover:bg-slate-700 transition-all"
-                    data-sound="mute" title="Sessiz">
-                    <i class="fa-solid fa-volume-xmark"></i>
-                </button>
-                <button id="sound-rain"
-                    class="sound-btn w-12 h-12 rounded-full flex items-center justify-center text-slate-300 hover:bg-slate-700 transition-all"
-                    data-sound="rain" title="Yağmur Sesi">
-                    <i class="fa-solid fa-cloud-rain"></i>
-                </button>
-                <button id="sound-cafe"
-                    class="sound-btn w-12 h-12 rounded-full flex items-center justify-center text-slate-300 hover:bg-slate-700 transition-all"
-                    data-sound="cafe" title="Kafe Sesi">
-                    <i class="fa-solid fa-mug-hot"></i>
-                </button>
-                <button id="sound-fireplace"
-                    class="sound-btn w-12 h-12 rounded-full flex items-center justify-center text-slate-300 hover:bg-slate-700 transition-all"
-                    data-sound="fireplace" title="Şömine Sesi">
-                    <i class="fa-solid fa-fire-flame-curved"></i>
-                </button>
-            </div>
+        <!-- Sound Controls - Minimal inline design -->
+        <div class="flex items-center gap-1 text-slate-400 text-xs mb-4">
+            <span class="mr-1 opacity-60"><i class="fa-solid fa-volume-low"></i></span>
+            <button id="sound-mute"
+                class="sound-btn active px-2.5 py-1 rounded-full hover:bg-slate-700/50 transition-all"
+                data-sound="mute">Sessiz</button>
+            <button id="sound-rain" class="sound-btn px-2.5 py-1 rounded-full hover:bg-slate-700/50 transition-all"
+                data-sound="rain">Yağmur</button>
+            <button id="sound-cafe" class="sound-btn px-2.5 py-1 rounded-full hover:bg-slate-700/50 transition-all"
+                data-sound="cafe">Kafe</button>
+            <button id="sound-fireplace" class="sound-btn px-2.5 py-1 rounded-full hover:bg-slate-700/50 transition-all"
+                data-sound="fireplace">Şömine</button>
         </div>
 
         <!-- Footer -->
@@ -283,83 +289,129 @@
 
     </div>
 
-    <!-- Completion Modal (The Trophy Room) -->
-    <div id="completion-modal" class="hidden fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-4">
+    <!-- Completion Modal (The Trophy Room) - Redesigned -->
+    <div id="completion-modal"
+        class="hidden fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-3 md:p-4">
         <div
-            class="max-w-md w-full bg-slate-800 rounded-3xl flex flex-col max-h-[85vh] overflow-hidden shadow-2xl ring-1 ring-white/10">
+            class="max-w-sm md:max-w-md w-full bg-slate-800 rounded-2xl md:rounded-3xl flex flex-col max-h-[90vh] overflow-hidden shadow-2xl ring-1 ring-white/10">
 
-            <!-- Modal Content Wrapper (Scrollable) -->
-            <div class="overflow-y-auto flex-1 custom-scrollbar">
-                <!-- Modal Header -->
-                <div class="p-6 pb-2 text-center sticky top-0 bg-slate-800 z-10">
-                    <div class="inline-flex items-center justify-center gap-2 mb-1">
-                        <i class="fa-solid fa-fire text-accent text-xl"></i>
-                        <span class="text-slate-400 font-medium tracking-wide text-sm uppercase">Görev Tamamlandı</span>
+            <!-- Fixed Top Section: Header + Tabs -->
+            <div class="shrink-0 bg-slate-800">
+                <!-- Modal Header (Compact) -->
+                <div class="px-4 pt-4 pb-2 text-center">
+                    <div class="inline-flex items-center gap-2 text-accent mb-1">
+                        <i class="fa-solid fa-fire text-lg"></i>
+                        <span class="text-xs font-semibold uppercase tracking-wider">Görev Tamamlandı</span>
                     </div>
-                    <h2 class="text-3xl font-bold text-white tracking-tight"><span id="modal-focus-time">25</span> dk
-                        Odaklandın!</h2>
+                    <h2 class="text-2xl md:text-3xl font-bold text-white">
+                        <span id="modal-focus-time">25</span> dk Odaklandın!
+                    </h2>
                 </div>
 
-                <!-- Tabs (Segmented Control) -->
-                <div class="px-6 py-2">
-                    <div class="flex p-1 bg-slate-700/50 rounded-xl relative">
-                        <!-- Tab Background Pill (Animated via JS logic if needed, or simple toggle) -->
+                <!-- Tabs (Always Visible) -->
+                <div class="px-4 pb-3">
+                    <div class="flex p-1 bg-slate-700/50 rounded-xl">
                         <button id="tab-story"
-                            class="flex-1 flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-bold transition-all bg-accent text-slate-900 shadow-lg">
-                            <i class="fa-brands fa-instagram text-lg"></i>
+                            class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-bold transition-all bg-accent text-slate-900 shadow-md">
+                            <i class="fa-brands fa-instagram"></i>
                             HİKAYE
                         </button>
                         <button id="tab-feed"
-                            class="flex-1 flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-medium text-slate-400 hover:text-slate-200 transition-all">
-                            <i class="fa-regular fa-image text-lg"></i>
+                            class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-slate-200 transition-all">
+                            <i class="fa-regular fa-image"></i>
                             YATAY
                         </button>
                     </div>
                 </div>
+            </div>
 
-                <!-- Preview Area (The Mirror) -->
-                <div
-                    class="flex-1 overflow-y-auto overflow-x-hidden p-6 bg-slate-800 relative flex flex-col items-center justify-center min-h-[400px]">
-
-                    <!-- Container for sizing stability -->
-                    <div id="preview-wrapper" class="relative transition-all duration-300 ease-out"
-                        style="will-change: transform, height;">
-                        <!-- The Mirrored Content will be injected here -->
-                        <!-- It will be scaled via CSS transform -->
-                    </div>
-
-                    <!-- Loading / Placeholder State -->
-                    <div id="preview-loading"
-                        class="absolute inset-0 flex flex-col items-center justify-center text-slate-500 gap-3 hidden">
-                        <i class="fa-solid fa-circle-notch fa-spin text-3xl text-accent"></i>
-                        <span class="text-sm">Önizleme Hazırlanıyor...</span>
-                    </div>
+            <!-- Scrollable Middle Section: Preview Only -->
+            <!-- Increased min-height for better quote readability -->
+            <div
+                class="flex-1 overflow-y-auto overflow-x-hidden bg-slate-900/50 relative flex items-center justify-center min-h-[280px] md:min-h-[400px]">
+                <!-- Preview Wrapper - Static, no animation -->
+                <div id="preview-wrapper" class="relative m-4">
+                    <!-- Scaled poster clone injected here by JS -->
                 </div>
-            </div> <!-- End of Scroll Wrapper -->
 
-            <!-- Action Bar -->
-            <div class="p-6 bg-slate-800 border-t border-slate-700/50 flex flex-col gap-3 z-10">
+                <!-- Loading State -->
+                <div id="preview-loading"
+                    class="absolute inset-0 flex flex-col items-center justify-center text-slate-500 gap-3 hidden">
+                    <i class="fa-solid fa-circle-notch fa-spin text-3xl text-accent"></i>
+                    <span class="text-sm">Önizleme Hazırlanıyor...</span>
+                </div>
+            </div>
 
-                <!-- Main Actions -->
-                <div class="grid grid-cols-[1fr_2fr] gap-3">
+            <!-- Fixed Bottom Section: Compact Action Bar -->
+            <div class="shrink-0 p-4 bg-slate-800 border-t border-slate-700/50">
+                <!-- Action Row -->
+                <div class="flex gap-2 mb-2">
                     <button id="reroll-btn"
-                        class="bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-xl py-4 font-semibold flex items-center justify-center gap-2 transition-all active:scale-95 group"
+                        class="w-12 h-12 flex items-center justify-center bg-slate-700 hover:bg-slate-600 text-accent rounded-xl transition-all active:scale-95"
                         title="Sözü Değiştir">
-                        <i
-                            class="fa-solid fa-dice text-xl text-accent group-hover:rotate-180 transition-transform duration-500"></i>
-                        <span class="hidden text-sm sm:inline">Sözü Değiştir</span>
+                        <i class="fa-solid fa-dice text-xl"></i>
                     </button>
-
                     <button id="download-active-btn"
-                        class="btn-accent rounded-xl py-4 font-bold text-lg shadow-lg shadow-accent/20 flex items-center justify-center gap-2 active:scale-95 transition-all">
+                        class="flex-1 btn-accent rounded-xl py-3 font-bold text-base shadow-lg shadow-accent/20 flex items-center justify-center gap-2 active:scale-95 transition-all">
                         <i class="fa-solid fa-download"></i>
-                        PAYLAŞ & İNDİR
+                        Poster İndir
                     </button>
                 </div>
-
                 <button id="close-modal-btn"
-                    class="text-slate-500 hover:text-slate-300 text-sm font-medium py-2 transition-colors">
+                    class="w-full text-slate-500 hover:text-slate-300 text-xs font-medium py-1.5 transition-colors">
                     Kapat ve Devam Et
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Modal - Daily History & Poster -->
+    <div id="stats-modal" class="hidden fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-3">
+        <div
+            class="max-w-sm w-full bg-slate-800 rounded-2xl flex flex-col max-h-[85vh] overflow-hidden shadow-2xl ring-1 ring-white/10">
+
+            <!-- Header -->
+            <div class="shrink-0 p-4 border-b border-slate-700/50 text-center">
+                <div class="inline-flex items-center gap-2 text-accent mb-1">
+                    <i class="fa-solid fa-chart-simple text-lg"></i>
+                    <span class="text-xs font-semibold uppercase tracking-wider">İstatistikler</span>
+                </div>
+                <h2 class="text-xl font-bold text-white">Bugünkü Odaklanma</h2>
+            </div>
+
+            <!-- Today's Stats -->
+            <div class="p-4 bg-slate-900/50">
+                <div class="flex items-center justify-center gap-4">
+                    <div class="text-center">
+                        <div class="text-4xl font-bold text-accent" id="stats-today-time">0</div>
+                        <div class="text-xs text-slate-400 uppercase">Dakika</div>
+                    </div>
+                    <div class="w-px h-12 bg-slate-700"></div>
+                    <div class="text-center">
+                        <div class="text-4xl font-bold text-white" id="stats-today-pomodoros">0</div>
+                        <div class="text-xs text-slate-400 uppercase">Pomodoro</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weekly History -->
+            <div class="flex-1 overflow-y-auto p-4">
+                <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Son 7 Gün</h3>
+                <div id="stats-weekly-list" class="space-y-2">
+                    <!-- JS will populate this -->
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="shrink-0 p-4 bg-slate-800 border-t border-slate-700/50">
+                <button id="create-poster-btn"
+                    class="w-full btn-accent rounded-xl py-3 font-bold text-sm flex items-center justify-center gap-2 active:scale-95 transition-all mb-2">
+                    <i class="fa-solid fa-image"></i>
+                    Poster Oluştur
+                </button>
+                <button id="close-stats-modal-btn"
+                    class="w-full text-slate-500 hover:text-slate-300 text-xs font-medium py-1.5 transition-colors">
+                    Kapat
                 </button>
             </div>
         </div>
@@ -415,9 +467,10 @@
                 <!-- Time & Label -->
                 <div class="flex flex-col items-center justify-center z-10">
                     <span
-                        class="font-bold font-mono tracking-tighter text-white text-[130px] leading-none mb-6 drop-shadow-2xl"
-                        style="font-family: 'JetBrains Mono', monospace;" id="story-time">25:00</span>
-                    <span class="text-4xl font-medium text-slate-400 tracking-[0.2em] uppercase">Odak Süresi</span>
+                        class="font-bold font-mono tracking-tighter text-white text-[130px] leading-none mb-2 drop-shadow-2xl"
+                        style="font-family: 'JetBrains Mono', monospace;" id="story-time">00:00</span>
+                    <span class="text-3xl font-normal text-slate-500 tracking-[0.5em] uppercase mb-4">sa : dk</span>
+                    <span class="text-4xl font-medium text-accent tracking-[0.2em] uppercase">Odak Süresi</span>
                 </div>
             </div>
 
@@ -464,10 +517,10 @@
                 <!-- Time & Label -->
                 <div class="flex flex-col items-center justify-center z-10">
                     <span
-                        class="font-bold font-mono tracking-tighter text-white text-[100px] leading-none mb-4 drop-shadow-2xl"
-                        style="font-family: 'JetBrains Mono', monospace;" id="feed-time">25:00</span>
-                    <span class="text-3xl font-medium text-slate-400 tracking-[0.25em] uppercase mt-8">Toplam
-                        Odak</span>
+                        class="font-bold font-mono tracking-tighter text-white text-[100px] leading-none mb-2 drop-shadow-2xl"
+                        style="font-family: 'JetBrains Mono', monospace;" id="feed-time">00:00</span>
+                    <span class="text-2xl font-normal text-slate-500 tracking-[0.5em] uppercase mb-3">sa : dk</span>
+                    <span class="text-3xl font-medium text-accent tracking-[0.25em] uppercase">Toplam Odak</span>
                 </div>
             </div>
 
@@ -631,7 +684,16 @@
             notificationBtn: document.getElementById('notification-btn'),
             notificationModal: document.getElementById('notification-modal'),
             enableNotificationsBtn: document.getElementById('enable-notifications-btn'),
-            closeNotificationModalBtn: document.getElementById('close-notification-modal-btn')
+            closeNotificationModalBtn: document.getElementById('close-notification-modal-btn'),
+
+            // Stats Modal Elements
+            statsBtn: document.getElementById('stats-btn'),
+            statsModal: document.getElementById('stats-modal'),
+            statsTodayTime: document.getElementById('stats-today-time'),
+            statsTodayPomodoros: document.getElementById('stats-today-pomodoros'),
+            statsWeeklyList: document.getElementById('stats-weekly-list'),
+            createPosterBtn: document.getElementById('create-poster-btn'),
+            closeStatsModalBtn: document.getElementById('close-stats-modal-btn')
         };
 
         // =====================
@@ -731,10 +793,10 @@
             const originalHeight = state.activeTab === 'story' ? 1920 : 1080;
 
             // 4. Calculate Scale (Contain Strategy)
-            // We use 90% of available space to give it some "breathing room" (margin)
+            // We use 95% of available space for maximum readability
             const scaleX = containerWidth / originalWidth;
             const scaleY = containerHeight / originalHeight;
-            const scale = Math.min(scaleX, scaleY) * 0.9;
+            const scale = Math.min(scaleX, scaleY) * 0.95;
 
             // 5. Update Preview Wrapper content & style
             elements.previewWrapper.innerHTML = ''; // Clear previous
@@ -770,11 +832,8 @@
             clone.style.willChange = 'transform';
             clone.style.backfaceVisibility = 'hidden';
 
-            // 7. Make Clickable
-            clone.style.cursor = 'pointer';
-            clone.onclick = () => {
-                downloadActiveTemplate();
-            };
+            // Removed click-to-download to prevent accidental triggers
+            // Download is now ONLY possible via the explicit button
         }
 
         // ResizeObserver for memory-safe and responsive scaling
@@ -938,6 +997,20 @@
         function saveDailyFocus() {
             localStorage.setItem(getTodayKey(), state.dailyFocusMinutes.toString());
         }
+
+        // Pomodoro Count Persistence
+        function getPomodoroKey() {
+            const today = new Date();
+            return `odaklan_pomodoro_${today.getFullYear()}_${today.getMonth()}_${today.getDate()}`;
+        }
+        function loadPomodoroCount() {
+            const stored = localStorage.getItem(getPomodoroKey());
+            state.pomodoroCount = stored ? parseInt(stored, 10) : 0;
+            updatePomodoroCounter();
+        }
+        function savePomodoroCount() {
+            localStorage.setItem(getPomodoroKey(), state.pomodoroCount.toString());
+        }
         function setupStorageSync() {
             window.addEventListener('storage', (event) => {
                 if (event.key === getTodayKey()) {
@@ -1010,86 +1083,128 @@
                 if (state.timeRemaining <= 0) { completePomodoro(); }
             }, TIMER_TICK_INTERVAL);
         } function pauseTimer() {
-            if
-                (!state.isRunning) return; state.isRunning = false; clearInterval(state.intervalId); state.targetEndTime = null;
-            elements.app.classList.remove('focus-mode'); elements.startBtn.classList.remove('hidden');
-            elements.pauseBtn.classList.add('hidden'); elements.pauseBtn.classList.remove('pulse-animation');
-            document.title = originalTitle;
-        } function resetTimer() {
-            pauseTimer(); state.timeRemaining = POMODORO_DURATION;
-            state.currentMode = 'focus'; updateTimerDisplay(); updateProgressRing(); updateModeDisplay(); stopAllSounds();
-            elements.resetBtn.classList.add('hidden'); elements.skipBtn.classList.add('hidden');
+            if (!state.isRunning) return;
+            state.isRunning = false;
+            clearInterval(state.intervalId);
+            state.targetEndTime = null;
+            elements.app.classList.remove('focus-mode');
+            elements.startBtn.classList.remove('hidden');
+            elements.pauseBtn.classList.add('hidden');
+            elements.pauseBtn.classList.remove('pulse-animation');
             document.title = originalTitle;
         }
 
-        // UPDATED: completePomodoro with Await Fonts and New Modal Logic
-        async function completePomodoro(isSkipped = false) {
-            clearInterval(state.intervalId); state.isRunning = false; stopAllSounds(); if
-                (state.currentMode === 'focus') {
-                let minutesToAdd; if (isSkipped && state.sessionStartTime) {
-                    minutesToAdd = Math.floor((Date.now() - state.sessionStartTime) / 60000);
+        function resetTimer() {
+            pauseTimer();
+            state.timeRemaining = POMODORO_DURATION;
+            state.currentMode = 'focus';
+            updateTimerDisplay();
+            updateProgressRing();
+            updateModeDisplay();
+            updateModeSelector();
+            stopAllSounds();
+            elements.resetBtn.classList.add('hidden');
+            elements.skipBtn.classList.add('hidden');
+            document.title = originalTitle;
+        }
+
+        // NEW: Reset timer to current mode's duration
+        function resetCurrentModeTimer() {
+            const durations = {
+                'focus': POMODORO_DURATION,
+                'shortBreak': SHORT_BREAK_DURATION,
+                'longBreak': LONG_BREAK_DURATION
+            };
+            state.timeRemaining = durations[state.currentMode];
+            updateTimerDisplay();
+            updateProgressRing();
+            updateModeDisplay();
+            elements.startBtn.classList.remove('hidden');
+            elements.pauseBtn.classList.add('hidden');
+            elements.resetBtn.classList.add('hidden');
+            elements.skipBtn.classList.add('hidden');
+        }
+
+        // NEW: Manual mode selection
+        function selectMode(mode) {
+            if (state.isRunning) {
+                pauseTimer();
+            }
+            state.currentMode = mode;
+            resetCurrentModeTimer();
+            updateModeSelector();
+        }
+
+        // NEW: Update mode selector UI
+        function updateModeSelector() {
+            const buttons = document.querySelectorAll('.mode-btn');
+            const modeToId = {
+                'focus': 'mode-focus',
+                'shortBreak': 'mode-short',
+                'longBreak': 'mode-long'
+            };
+
+            buttons.forEach(btn => {
+                if (btn.id === modeToId[state.currentMode]) {
+                    btn.classList.add('bg-accent', 'text-slate-900', 'shadow-md', 'font-bold');
+                    btn.classList.remove('text-slate-400', 'font-medium');
                 } else {
-                    minutesToAdd = Math.round(POMODORO_DURATION / 60);
-                } if (minutesToAdd > 0) {
-                    state.dailyFocusMinutes += minutesToAdd;
-                    saveDailyFocus();
-                    updateDailyFocusDisplay();
+                    btn.classList.remove('bg-accent', 'text-slate-900', 'shadow-md', 'font-bold');
+                    btn.classList.add('text-slate-400', 'font-medium');
+                }
+            });
+        }
+
+        // UPDATED: completePomodoro - Simplified, no auto mode-switching
+        async function completePomodoro(isSkipped = false) {
+            clearInterval(state.intervalId);
+            state.isRunning = false;
+            stopAllSounds();
+
+            if (state.currentMode === 'focus') {
+                // Always increment pomodoro count, even on skip
+                state.pomodoroCount++;
+                updatePomodoroCounter();
+                savePomodoroCount();
+
+                // Time tracking: Record actual time worked (even on skip)
+                if (state.sessionStartTime) {
+                    const minutesToAdd = Math.floor((Date.now() - state.sessionStartTime) / 60000);
+                    if (minutesToAdd > 0) {
+                        state.dailyFocusMinutes += minutesToAdd;
+                        saveDailyFocus();
+                        updateDailyFocusDisplay();
+                    }
                 }
 
-                if (!isSkipped) {
-                    state.pomodoroCount++;
-                    updatePomodoroCounter();
-                }
+                // Save to weekly history for stats tracking
+                saveToWeeklyHistory();
+            }
 
-                // === MODAL PREPARATION ===
-                // Wait for any fonts to load to prevent FOUC in preview
-                try { await document.fonts.ready; } catch (e) { }
+            // === AUTO MODE SWITCHING ===
+            const completedMode = state.currentMode;
 
-                // 1. Generate Quote (Single Source of Truth)
-                state.currentQuote = getRandomQuote();
-
-                // 2. Show Modal
-                showCompletionModal();
-
-                // 3. Render Preview (This triggers calculation and cloning)
-                calculateScaleAndRender();
-
-                // Determine next mode...
+            if (completedMode === 'focus') {
+                // After focus: switch to break
                 if (state.pomodoroCount > 0 && state.pomodoroCount % POMODOROS_UNTIL_LONG_BREAK === 0) {
                     state.currentMode = 'longBreak';
-                    state.timeRemaining = LONG_BREAK_DURATION;
                 } else {
                     state.currentMode = 'shortBreak';
-                    state.timeRemaining = SHORT_BREAK_DURATION;
                 }
             } else {
+                // After any break: switch back to focus
                 state.currentMode = 'focus';
-                state.timeRemaining = POMODORO_DURATION;
             }
+
+            resetCurrentModeTimer();
+            updateModeSelector();
 
             elements.app.classList.remove('focus-mode');
 
+            // === NOTIFICATIONS (based on COMPLETED mode) ===
             try {
-                if (state.currentMode === 'focus') {
-                    elements.audioBreakEnd.play();
-                    // Resume ambience after notification if selected
-                    if (state.currentSound !== 'mute') {
-                        elements.audioBreakEnd.onended = () => {
-                            // Only resume if timer hasn't started yet and sound is still selected
-                            if (!state.isRunning && state.currentSound !== 'mute') {
-                                playSound(state.currentSound);
-                                // We need to pause it again because playSound effectively starts it immediately
-                                // But here we WANT it to start immediately as per user request ("devam etmesi")
-                                // If the user prefers it to only play *during* timer, we should wait.
-                                // User said: "sesin bildirimden sonra devam etmesi" (sound should continue after notification).
-                                // This implies auto-resume.
-                            }
-                        };
-                    }
-                    sendNotification('💪 Mola Bitti!', 'İşe dönme zamanı! Odaklanmaya hazır mısın?');
-                } else {
+                if (completedMode === 'focus') {
                     elements.audioComplete.play();
-                    // Resume ambience after notification if selected
                     if (state.currentSound !== 'mute') {
                         elements.audioComplete.onended = () => {
                             if (!state.isRunning && state.currentSound !== 'mute') {
@@ -1097,8 +1212,23 @@
                             }
                         };
                     }
-                    if (state.currentMode === 'shortBreak') sendNotification('☕ Kısa Mola!', '5 dakika dinlen.');
-                    else sendNotification('🎯 Uzun Mola!', '15 dakika mola hakkın var.');
+                    // Correct notification for focus completion
+                    if (state.currentMode === 'longBreak') {
+                        sendNotification('🎯 Harika! 4 Pomodoro Tamamlandı!', '15 dakika uzun mola hakkın var.');
+                    } else {
+                        sendNotification('☕ Pomodoro Tamamlandı!', '5 dakika kısa mola zamanı.');
+                    }
+                } else {
+                    // Break completed
+                    elements.audioBreakEnd.play();
+                    if (state.currentSound !== 'mute') {
+                        elements.audioBreakEnd.onended = () => {
+                            if (!state.isRunning && state.currentSound !== 'mute') {
+                                playSound(state.currentSound);
+                            }
+                        };
+                    }
+                    sendNotification('💪 Mola Bitti!', 'İşe dönme zamanı! Odaklanmaya hazır mısın?');
                 }
             } catch (e) { console.log('Sound not available', e); }
 
@@ -1160,6 +1290,71 @@
             elements.modal.classList.add('hidden');
         }
 
+        // Stats Modal Functions
+        function getWeeklyHistory() {
+            const history = JSON.parse(localStorage.getItem('odaklan_weekly_history') || '{}');
+            return history;
+        }
+
+        function saveToWeeklyHistory() {
+            const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+            const history = getWeeklyHistory();
+            history[today] = {
+                minutes: state.dailyFocusMinutes,
+                pomodoros: state.pomodoroCount
+            };
+            // Keep only last 7 days
+            const dates = Object.keys(history).sort().slice(-7);
+            const trimmed = {};
+            dates.forEach(date => trimmed[date] = history[date]);
+            localStorage.setItem('odaklan_weekly_history', JSON.stringify(trimmed));
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            const days = ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cts'];
+            return days[date.getDay()] + ', ' + date.getDate() + '/' + (date.getMonth() + 1);
+        }
+
+        function showStatsModal() {
+            // Update today's stats
+            elements.statsTodayTime.textContent = state.dailyFocusMinutes;
+            elements.statsTodayPomodoros.textContent = state.pomodoroCount;
+
+            // Populate weekly history
+            const history = getWeeklyHistory();
+            const today = new Date().toISOString().split('T')[0];
+
+            // Add today if not in history yet
+            if (!history[today]) {
+                history[today] = { minutes: state.dailyFocusMinutes, pomodoros: state.pomodoroCount };
+            } else {
+                history[today].minutes = state.dailyFocusMinutes;
+                history[today].pomodoros = state.pomodoroCount;
+            }
+
+            const dates = Object.keys(history).sort().reverse();
+            elements.statsWeeklyList.innerHTML = dates.map(date => {
+                const data = history[date];
+                const isToday = date === today;
+                return `
+                    <div class="flex items-center justify-between p-2 rounded-lg ${isToday ? 'bg-accent/10' : 'bg-slate-700/30'}">
+                        <span class="text-sm ${isToday ? 'text-accent font-medium' : 'text-slate-300'}">${isToday ? 'Bugün' : formatDate(date)}</span>
+                        <div class="flex items-center gap-3 text-xs">
+                            <span class="text-slate-400">${data.minutes} dk</span>
+                            <span class="text-slate-500">${data.pomodoros} 🍅</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            elements.statsModal.classList.remove('hidden');
+        }
+
+        function hideStatsModal() {
+            elements.statsModal.classList.add('hidden');
+        }
+
         // =====================
         // Smart Onboarding Logic
         // =====================
@@ -1209,8 +1404,17 @@
             } else {
                 // Default / Onboarding State
                 if (isOnboarding) {
-                    modalTitle.textContent = "Derin Odaklanma Başlıyor! 🚀";
-                    modalText.textContent = "Süre dolduğunda seni uyarabilmem için bildirim izni vermen harika olur. Açmak ister misin?";
+                    // Mode-aware messaging
+                    if (state.currentMode === 'focus') {
+                        modalTitle.textContent = "Derin Odaklanma Başlıyor! 🚀";
+                        modalText.textContent = "Süre dolduğunda seni uyarabilmem için bildirim izni vermen harika olur. Açmak ister misin?";
+                    } else if (state.currentMode === 'shortBreak') {
+                        modalTitle.textContent = "Kısa Mola Başlıyor! ☕";
+                        modalText.textContent = "Mola bittiğinde seni uyarabilmem için bildirim izni vermen harika olur. Açmak ister misin?";
+                    } else {
+                        modalTitle.textContent = "Uzun Mola Başlıyor! 🛋️";
+                        modalText.textContent = "Mola bittiğinde seni uyarabilmem için bildirim izni vermen harika olur. Açmak ister misin?";
+                    }
                     actionBtn.textContent = "Aç ve Başla";
 
                     // Special Handler for Onboarding
@@ -1292,6 +1496,13 @@
             btn.addEventListener('click', () => { playSound(btn.dataset.sound); });
         });
 
+        // Mode Selector Event Listeners
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                selectMode(btn.dataset.mode);
+            });
+        });
+
         // New Modal Event Listeners
         elements.tabStory.addEventListener('click', () => handleTabSwitch('story'));
         elements.tabFeed.addEventListener('click', () => handleTabSwitch('feed'));
@@ -1301,6 +1512,20 @@
         elements.closeModalBtn.addEventListener('click', hideCompletionModal);
         elements.modal.addEventListener('click', (e) => {
             if (e.target === elements.modal) hideCompletionModal();
+        });
+
+        // Stats Modal Event Listeners
+        elements.statsBtn.addEventListener('click', showStatsModal);
+        elements.closeStatsModalBtn.addEventListener('click', hideStatsModal);
+        elements.statsModal.addEventListener('click', (e) => {
+            if (e.target === elements.statsModal) hideStatsModal();
+        });
+        elements.createPosterBtn.addEventListener('click', async () => {
+            hideStatsModal();
+            try { await document.fonts.ready; } catch (e) { }
+            state.currentQuote = getRandomQuote();
+            showCompletionModal();
+            calculateScaleAndRender();
         });
 
         document.addEventListener('keydown', (e) => {
@@ -1321,6 +1546,7 @@
         // =====================
         function init() {
             loadDailyFocus();
+            loadPomodoroCount();
             updateTimerDisplay();
             updateProgressRing();
             updateModeDisplay();

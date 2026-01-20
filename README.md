@@ -1,82 +1,122 @@
-# Odaklan! - Premium Pomodoro Timer
+# Odaklan! 🎯
 
-**Odaklan!**, modern zamanın dikkat dağınıklığına karşı geliştirilmiş; estetik, manevi derinlikli ve kullanıcı deneyimini merkeze alan yeni nesil bir odaklanma asistanıdır.
+**Türkçe Pomodoro Zamanlayıcı** — Odaklanmanı artır, verimliliğini takip et.
 
-Standart sayaçların ötesine geçen "Kupa Odası" (Trophy Room), "Akıllı Başlangıç" sistemi ve "Kesintisiz Atmosfer" özellikleri ile çalışmayı bir ritüele dönüştürür.
+![Odaklan! Screenshot](screenshot.png)
 
-![Odaklan! Preview](preview.png)
+## ✨ Özellikler
 
-## ✨ Öne Çıkan Özellikler
+### ⏱️ Pomodoro Zamanlayıcı
+- **25 dakika odak** + **5 dakika kısa mola** + **15 dakika uzun mola**
+- Her 4 pomodoro'dan sonra otomatik uzun mola
+- Manuel mod seçimi (istediğin zaman mola alabilirsin)
+- Görsel ilerleme halkası
 
-### 🏆 Kupa Odası (Trophy Room)
-Her tamamlanan Pomodoro bir zaferdir. Seans sonunda açılan özel ekranda başarınızı taçlandırın:
-*   **Hikaye Modu (9:16):** Instagram ve WhatsApp hikayeleri için optimize edilmiş dikey tasarım.
-*   **Yatay Mod (16:9):** Twitter (X) ve LinkedIn paylaşımları için geniş ekran tasarım.
-*   **Canlı Önizleme:** Paylaşmadan önce posterinizin nasıl görüneceğini anlık olarak izleyin.
-*   **İnteraktif Sözlük:** Beğenmediğiniz motivasyon sözünü tek tıkla yenileyin.
-*   **Tek Tıkla İndir:** Yüksek çözünürlüklü (HD) görsel oluşturma.
+### 📊 İstatistikler
+- **Günlük odaklanma süresi** takibi
+- **Pomodoro sayacı** (sayfa yenilense bile korunur)
+- **Son 7 gün geçmişi** ile haftalık performans
+- Tıklanabilir istatistik paneli
 
-### 🧠 Akıllı Bildirim Sistemi
-Kullanıcıyı süreçten koparmayan, proaktif bir deneyim:
-*   **Akıllı Başlangıç (Smart Onboarding):** "Başla" tuşuna bastığınızda bildirim izniniz yoksa, sistem sizi nazikçe uyarır ve izin vermeniz için yönlendirir. Böylece süreyi kaçırma riskiniz ortadan kalkar.
-*   **Sistem Kontrolü:** Bildirim ziline tıkladığınızda açılan **"Sistem Aktif ve Hazır! 🫡"** penceresi ile bildirimlerin çalıştığını anında test edebilirsiniz.
-*   **Fresh Alert:** Eski bildirimler üst üste binmez, her yeni uyarı öncekini kapatarak ekranı temiz tutar.
+### 🎨 Poster Oluşturucu
+- Çalışmanızı **Instagram Story** veya **Feed** formatında paylaşın
+- Motivasyon sözleri ile zenginleştirilmiş posterler
+- Tek tıkla indirme
 
-### 🌊 Kesintisiz Atmosfer & Sesler
-*   **3 Farklı Mod:** 
-    *   🌧️ **Yağmur:** Huzurlu bir sonbahar günü.
-    *   ☕ **Kafe:** Üretken bir kahve dükkanı ortamı.
-    *   🔥 **Şömine:** Sıcacık odun çıtırtıları (Seamless Loop).
-*   **Auto-Resume:** Mola bildirimi gelse bile, bildirim bittiği an veya sayacı tekrar başlattığınız an atmosfer sesi **kaldığı yerden devam eder.** Sessizlik oluşmaz.
+### 🔔 Bildirimler
+- Tarayıcı bildirimleri ile uyarı (izin gerektirir)
+- Mod'a özel bildirim mesajları
+- Sesli uyarılar
 
-### 📜 Seçkin Sözlük & Manevi Derinlik
-*   Tamamen yerli ve manevi değerlere uygun kürasyon.
-*   **Kaynaklar:** Yunus Emre, Mevlana, Fatih Sultan Mehmet, Şeyh Edebali, Aliya İzzetbegoviç ve Hadis-i Şerifler.
-*   *Aristoteles vb. batı kaynaklı veya kaynağı şüpheli sözler sistemden temizlenmiştir.*
+### 🎵 Ambiyans Sesleri
+- **Sessiz** | **Yağmur** | **Kafe** | **Şömine**
+- Odaklanmayı artıran arka plan sesleri
 
----
-
-## 🚀 Kurulum & Kullanım
-
-Bu proje, herhangi bir karmaşık sunucu kurulumu gerektirmez.
-
-1.  **İndirin:** Proje dosyalarını bilgisayarınıza indirin.
-2.  **Ses Dosyalarını Kontrol Edin:** `assets/sounds/` klasöründe şu dosyaların olduğundan emin olun:
-    *   `fireplace.mp3`
-    *   `rain.mp3`
-    *   `cafe.mp3`
-3.  **Çalıştırın:** `index.html` dosyasını çift tıklayarak favori tarayıcınızda (Chrome önerilir) açın.
+### 📱 Tam Responsive
+- Mobil, tablet ve masaüstü uyumlu
+- PWA desteği (Ana ekrana eklenebilir)
 
 ---
 
-## ⌨️ Klavye Kısayolları
+## 🚀 Kurulum
 
-Profesyoneller için hızlandırılmış kontrol:
+### Yerel Kullanım
+```bash
+# Projeyi klonlayın
+git clone https://github.com/yourusername/odaklan.git
 
-| Tuş | İşlev |
-| --- | --- |
-| **Space** | Başlat / Duraklat |
-| **R** | Sayacı Sıfırla (Reset) |
-| **ESC** | Molayı Bitir / Pencereyi Kapat |
+# Klasöre gidin
+cd odaklan
+
+# index.html'i tarayıcınızda açın
+# Ya da basit bir HTTP sunucusu başlatın:
+npx serve .
+```
+
+### Canlı Demo
+[🔗 Odaklan! Demo](#) <!-- Kendi URL'nizi ekleyin -->
 
 ---
 
-## 📂 Proje Mimarisi
+## 📁 Proje Yapısı
 
 ```
-Odaklan/
-├── index.html          # Core Logic (HTML5, Tailwind, JS)
-├── README.md           # Dokümantasyon
-└── assets/
-    └── sounds/         # Atmosfer Sesleri
+Odaklan!/
+├── index.html      # Ana uygulama (tek dosya)
+├── screenshot.png  # Ekran görüntüsü
+├── README.md       # Bu dosya
+└── sounds/         # Ses dosyaları (opsiyonel)
 ```
+
+---
+
+## 🛠️ Teknolojiler
+
+- **HTML5** — Yapı
+- **Tailwind CSS** (CDN) — Stil
+- **Vanilla JavaScript** — Mantık
+- **LocalStorage** — Veri kalıcılığı
+- **Web Notifications API** — Bildirimler
+- **html2canvas** — Poster oluşturma
+
+---
+
+## 📖 Kullanım
+
+1. **Mod Seç:** Odak, Kısa Mola veya Uzun Mola
+2. **Başla:** Timer'ı başlat
+3. **Çalış:** Odaklan ve zamanı takip et
+4. **Mola:** Pomodoro bitince otomatik mola moduna geçer
+5. **İstatistikler:** Sağ üstteki süreye tıkla → Detaylı istatistikler
+6. **Poster:** İstatistikler > Poster Oluştur → Paylaş!
+
+---
+
+## 🔧 Özelleştirme
+
+`index.html` içindeki sabitleri değiştirerek süreleri ayarlayabilirsiniz:
+
+```javascript
+const POMODORO_DURATION = 25 * 60;      // 25 dakika (saniye)
+const SHORT_BREAK_DURATION = 5 * 60;    // 5 dakika
+const LONG_BREAK_DURATION = 15 * 60;    // 15 dakika
+const POMODOROS_UNTIL_LONG_BREAK = 4;   // Uzun mola için pomodoro sayısı
+```
+
+---
+
+## 📄 Lisans
+
+MIT License — Özgürce kullanın, değiştirin, paylaşın.
 
 ---
 
 ## 👨‍💻 Geliştirici
 
 **Atakan Karakaş**
-*Design & Code*
 
 ---
-*İmkanın sınırını görmek için imkansızı denemek lazım.*
+
+<p align="center">
+  <sub>🍅 Odaklanın, başarın! 🍅</sub>
+</p>
